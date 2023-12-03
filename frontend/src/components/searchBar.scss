@@ -1,0 +1,24 @@
+.searchBar {
+  width: 17rem;
+  background-color: var(--color);
+  color: var(--back);
+  margin: 1rem;
+  border: none;
+  border-radius: var(--border-radius);
+
+  label {
+    color: var(--back);
+    background-color: var(--color);
+    padding: 0.25rem;
+    border-radius: var(--border-radius);
+  }
+
+  input {
+    background-color: var(--color);
+    color: var(--back);
+  }
+
+  .MuiSvgIcon-root {
+    color: var(--back);
+  }
+}

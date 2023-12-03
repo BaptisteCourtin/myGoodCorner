@@ -1,0 +1,57 @@
+.cardsAdUl {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.cardAd {
+  border-radius: var(--border-radius);
+  border: 2px var(--color) solid;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  padding: 0.5rem;
+  width: 300px;
+
+  img {
+    width: 95%;
+    max-height: 150px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+  }
+
+  .desc {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+
+    &.desc1 {
+      .row {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+      p {
+        // pour mettre ... après la Xème ligne
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+    }
+  }
+
+  hr {
+    width: 60%;
+    margin: 0.25rem 0;
+  }
+}

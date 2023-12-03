@@ -1,0 +1,74 @@
+.adsList {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  a.linkAdmin {
+    align-self: flex-end;
+  }
+
+  .trieur {
+    margin-bottom: 1rem;
+
+    select {
+      border-radius: var(--border-radius);
+      padding: var(--pad);
+      background-color: var(--color);
+      color: var(--back);
+    }
+  }
+}
+
+.adsId {
+  .container-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 2rem;
+
+    img {
+      border-radius: var(--border-radius);
+      box-shadow: 0 0 20px var(--color);
+    }
+
+    .desc {
+      width: 100%;
+
+      &.desc1 {
+        .row {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          margin: 0.5rem 0;
+        }
+      }
+
+      &.desc2 {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+
+        span {
+          font-style: italic;
+        }
+      }
+
+      &.desc3 {
+        .linkCategorie {
+          background-color: var(--color);
+          color: var(--back);
+          padding: var(--pad);
+          border-radius: var(--border-radius);
+          width: max-content;
+        }
+      }
+    }
+  }
+}

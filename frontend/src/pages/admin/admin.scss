@@ -1,0 +1,86 @@
+.adminAds {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem;
+    width: 350px;
+
+    input,
+    select,
+    textarea {
+      background-color: var(--color);
+      color: var(--back);
+      padding: var(--pad);
+      border: none;
+      border-radius: var(--border-radius);
+      width: 100%;
+      height: 40px;
+    }
+
+    textarea {
+      resize: none;
+      height: 100px;
+    }
+
+    .envoyer {
+      padding: var(--pad);
+      margin-top: 3rem;
+      border-radius: var(--border-radius);
+    }
+  }
+}
+
+.adminCategories {
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem;
+
+    li {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      width: 100%;
+
+      button {
+        padding: var(--pad);
+        margin: 0 0.25rem;
+        border-radius: var(--border-radius);
+      }
+    }
+  }
+
+  form {
+    display: flex;
+    gap: 0.5rem;
+    margin: 2rem;
+
+    input {
+      background-color: var(--color);
+      color: var(--back);
+      padding: var(--pad);
+      border: none;
+      border-radius: var(--border-radius);
+    }
+
+    button {
+      padding: var(--pad);
+      margin: 0 0.25rem;
+      border-radius: var(--border-radius);
+    }
+  }
+}

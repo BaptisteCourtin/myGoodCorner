@@ -1,0 +1,49 @@
+entity: AdEntity
+items:
+  ad{1..5}:
+    title: "{{commerce.product}}"
+    description: "{{commerce.productDescription}}"
+    owner: "{{person.fullName}}"
+    price: "{{commerce.price}}"
+    picture: "{{image.url}}"
+    location: "{{location.city}}"
+    category: "@category1"
+    tags:
+      - "@tag1"
+      - "@tag2"
+
+  ad{6..10}:
+    title: "{{commerce.product}}"
+    description: "{{commerce.productDescription}}"
+    owner: "{{person.fullName}}"
+    price: "{{commerce.price}}"
+    picture: "{{image.url}}"
+    location: "{{location.city}}"
+    category: "@category2"
+    tags:
+      - "@tag1"
+      - "@tag4"
+
+  ad{11..15}:
+    title: "{{commerce.product}}"
+    description: "{{commerce.productDescription}}"
+    owner: "{{person.fullName}}"
+    price: "{{commerce.price}}"
+    picture: "{{image.url}}"
+    location: "{{location.city}}"
+    category: "@category3"
+    tags:
+      - "@tag2"
+      - "@tag3"
+
+  ad{16..20}:
+    title: "{{commerce.product}}"
+    description: "{{commerce.productDescription}}"
+    owner: "{{person.fullName}}"
+    price: "{{commerce.price}}"
+    picture: "{{image.url}}"
+    location: "{{location.city}}"
+    category: "@category4"
+    tags:
+      - "@tag3"
+      - "@tag4"

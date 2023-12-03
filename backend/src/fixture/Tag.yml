@@ -1,0 +1,4 @@
+entity: TagEntity
+items:
+  tag{1..5}:
+    name: "{{commerce.productAdjective}}"

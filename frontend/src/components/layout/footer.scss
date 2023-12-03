@@ -1,0 +1,22 @@
+footer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  background-color: var(--back-nav);
+  color: var(--color-nav);
+  height: 2rem;
+
+  nav {
+    padding: 0 2rem;
+
+    width: 1500px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

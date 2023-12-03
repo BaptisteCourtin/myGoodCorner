@@ -1,0 +1,35 @@
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  background-color: var(--back-nav);
+  color: var(--color-nav);
+  height: 70px;
+
+  .navbar {
+    padding: 0 2rem;
+
+    width: 1500px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .icon {
+      height: 60px;
+      width: 60px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 2rem;
+    }
+  }
+}

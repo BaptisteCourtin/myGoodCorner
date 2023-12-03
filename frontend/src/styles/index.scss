@@ -1,0 +1,15 @@
+@import "./reset.scss";
+@import "./variables.scss";
+
+@import "../components/layout/navbar.scss";
+@import "../components/layout/footer.scss";
+@import "../components/layout/darkLight.scss";
+
+@import "../components/cardAd.scss";
+@import "../components/linkCategories.scss";
+@import "../components/tagListRender.scss";
+@import "../components/searchBar.scss";
+
+@import "../pages/ads/ads.scss";
+@import "../pages/categories/categories.scss";
+@import "../pages/admin/admin.scss";
