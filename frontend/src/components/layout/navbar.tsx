@@ -10,7 +10,7 @@ const navbar = ({ isDarkTheme, setIsDarkTheme }: any) => {
     <header>
       <nav className="navbar">
         <Link href="/">
-          <Image src={icon} alt="icon" className="icon" priority={true} />
+          <Image src={icon} alt="icon" className="logo-icon" priority={true} />
         </Link>
 
         <div className="links">

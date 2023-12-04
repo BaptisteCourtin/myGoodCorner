@@ -1,27 +1,37 @@
+// fichier liste categories
 .categories {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align: center;
 
   a.linkAdmin {
     align-self: flex-end;
+    padding-right: 2rem;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
   }
 }
 
-.categories ul {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 0.5rem;
-  margin: 2rem;
-
-  li {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem;
-    width: 100%;
+// fichier liste de ads dans la category choisie
+.listAdByCategoryId {
+  .retour {
+    padding-left: 2rem;
   }
 }

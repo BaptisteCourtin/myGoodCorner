@@ -37,6 +37,13 @@
       border-radius: var(--border-radius);
     }
   }
+
+  @media screen and (max-width: 420px) {
+    form {
+      margin: 1rem;
+      width: 320px;
+    }
+  }
 }
 
 .adminCategories {

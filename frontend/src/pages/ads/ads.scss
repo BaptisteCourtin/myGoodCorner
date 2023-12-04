@@ -8,6 +8,7 @@
 
   a.linkAdmin {
     align-self: flex-end;
+    padding-right: 2rem;
   }
 
   .trieur {
@@ -23,6 +24,10 @@
 }
 
 .adsId {
+  .retour {
+    padding-left: 2rem;
+  }
+
   .container-info {
     display: flex;
     flex-direction: column;
@@ -34,6 +39,10 @@
     img {
       border-radius: var(--border-radius);
       box-shadow: 0 0 20px var(--color);
+      max-width: 650px;
+      max-height: 500px;
+
+      width: 100%;
     }
 
     .desc {

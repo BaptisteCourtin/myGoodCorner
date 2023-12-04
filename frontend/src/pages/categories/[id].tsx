@@ -42,7 +42,7 @@ const CategoryId = () => {
 
   return (
     category && (
-      <div className="adsId">
+      <div className="listAdByCategoryId">
         <Link href={"/categories/list"} className="retour">
           ← Retour à la liste
         </Link>
