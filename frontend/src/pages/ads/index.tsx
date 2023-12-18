@@ -1,5 +1,5 @@
-import CardAd from "@/components/CardAd";
-import SearchBar from "@/components/SearchBar";
+import CardAd from "@/components/ads/CardAd";
+import SearchBar from "@/components/ads/SearchBar";
 import axiosInstance from "@/lib/axiosInstance";
 import Ad from "@/types/Ad";
 import axios, { CancelTokenSource } from "axios";
@@ -10,7 +10,7 @@ const index = () => {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [tri, setTri] = useState<string>("Date Croissant");
+  const [tri, setTri] = useState<string>("Date Décroissant");
 
   const getAds = (source: CancelTokenSource) => {
     axiosInstance
@@ -43,7 +43,7 @@ const index = () => {
       <h1>ADS LIST</h1>
 
       <Link href={"/admin/ads/createAds"} className="linkAdmin">
-        Page admin des annonces →
+        Créer une annonce →
       </Link>
 
       <SearchBar />
@@ -51,8 +51,8 @@ const index = () => {
       <div className="trieur">
         <label htmlFor="tri">Ordre de tri : </label>
         <select id="tri" onChange={(event) => setTri(event.target.value)}>
-          <option value="Date Croissant">Date Croissant</option>
           <option value="Date Décroissant">Date Décroissant</option>
+          <option value="Date Croissant">Date Croissant</option>
           <option value="Titre A-Z">Titre A-Z</option>
           <option value="Titre Z-A">Titre Z-A</option>
         </select>

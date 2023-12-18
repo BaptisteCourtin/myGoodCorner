@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import axios, { CancelTokenSource } from "axios";
+import { useRouter } from "next/router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+
 import axiosInstance from "@/lib/axiosInstance";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
-import axios, { CancelTokenSource } from "axios";
 import Category from "@/types/Category";
+import ButtonEnregistrer from "@/components/admin/ButtonEnregistrer";
+import Link from "next/link";
 
 const schema = yup.object({
   title: yup.string().required("Attention, le titre de l'annonce est requis"),
@@ -22,7 +24,7 @@ const schema = yup.object({
   category: yup.number(),
 });
 
-const createAds = () => {
+const createAds = ({ ad }: any) => {
   const router = useRouter();
   const {
     register,
@@ -65,12 +67,10 @@ const createAds = () => {
   // ---
 
   const onSubmit = (data: any) => {
-    console.log(data);
-
     axiosInstance
-      .post("/ads/create", data)
+      .post(`/ads/create`, data)
       .then(() => {
-        // router.push("/ads");
+        router.push("/ads");
         console.log("C'est bon pour nous");
       })
       .catch((e) => {
@@ -79,38 +79,68 @@ const createAds = () => {
   };
 
   return (
-    <div className="adminAds">
+    <div className="adminCreateAds">
+      <Link href={"/ads"} className="retourTopButton">
+        ← Retour à la liste
+      </Link>
+
+      <h1>CREER UNE ANNONCE</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <label htmlFor="title">Titre :</label>
         <input
+          id="title"
           type="text"
           {...register("title")}
           placeholder="votre titre d'annonce"
         />
         <p>{errors?.title?.message}</p>
 
+        <label htmlFor="description">Description :</label>
         <textarea
+          id="description"
           {...register("description")}
           placeholder="votre description d'annonce"
         />
         <p>{errors?.description?.message}</p>
 
-        <input type="text" {...register("owner")} placeholder="vous" />
+        <label htmlFor="owner">Propriétaire : </label>
+        <input
+          id="owner"
+          type="text"
+          {...register("owner")}
+          placeholder="vous"
+        />
         <p>{errors?.owner?.message}</p>
 
-        <input type="number" {...register("price")} placeholder="votre prix" />
+        <label htmlFor="price">Prix :</label>
+        <input
+          id="price"
+          type="number"
+          {...register("price")}
+          placeholder="votre prix"
+        />
         <p>{errors?.price?.message}</p>
 
-        <input type="text" {...register("picture")} placeholder="votre image" />
+        <label htmlFor="picture">Image :</label>
+        <input
+          id="picture"
+          type="text"
+          {...register("picture")}
+          placeholder="votre image"
+        />
         <p>{errors?.picture?.message}</p>
 
+        <label htmlFor="location">Ville :</label>
         <input
+          id="location"
           type="text"
           {...register("location")}
           placeholder="votre ville"
         />
         <p>{errors?.location?.message}</p>
 
-        <select id="tri" {...register("category")} defaultValue={""}>
+        <label htmlFor="category">Categorie :</label>
+        <select id="category" {...register("category")} defaultValue={""}>
           <option value="" disabled>
             Selectionnez votre categorie
           </option>
@@ -121,7 +151,7 @@ const createAds = () => {
           ))}
         </select>
 
-        <input className="envoyer" type="submit" />
+        <ButtonEnregistrer />
       </form>
     </div>
   );

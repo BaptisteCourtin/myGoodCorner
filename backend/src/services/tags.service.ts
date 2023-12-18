@@ -11,15 +11,6 @@ class TagsService {
     this.dbORM = datasource.getRepository(TagEntity);
   }
 
-  // async list() {
-  //   const result = await this.dbORM.find();
-
-  //   if (!result) {
-  //     throw new Error("Pas de tag");
-  //   }
-  //   return result;
-  // }
-
   async list(tagIds?: string[]) {
     const result = await this.dbORM.find({
       where: {

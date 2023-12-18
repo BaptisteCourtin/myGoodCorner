@@ -17,7 +17,7 @@ class AdService {
   }
 
   async list(search?: string) {
-    const result = this.dbORM.find({
+    const result = await this.dbORM.find({
       relations: { category: true, tags: true }, //permet de récupérer la jointure faite entre ad et category et entre ad et tags
       where: search
         ? [
@@ -105,7 +105,7 @@ class AdService {
     { tags, ...data }: Partial<AdEntity> & { tags: string[] }
   ) {
     const ad = await this.find(id);
-    const newInfos = this.dbORM.merge(ad, data);
+    const infosMerge = this.dbORM.merge(ad, data);
     let listTags: TagEntity[] = [];
 
     if (tags?.length) {
@@ -116,8 +116,8 @@ class AdService {
       return acc.includes(item) ? acc : [...acc, item];
     }, [] as TagEntity[]);
 
-    newInfos.tags = result;
-    return await this.dbORM.save(newInfos);
+    infosMerge.tags = result;
+    return await this.dbORM.save(infosMerge);
   }
 
   // ---

@@ -1,14 +1,16 @@
-import Tag from "@/types/Tag";
-import Link from "next/link";
 import React from "react";
-import LinkCategories from "./LinkCategories";
-import TagListRender from "./TagListRender";
+import Link from "next/link";
+import Tag from "@/types/Tag";
+
+import LinkCategories from "../categories/LinkCategories";
+import TagListRender from "../tags/TagListRender";
+import DateFormatter from "../DateFormatter";
 
 const CardAd = ({ ad }: any) => {
   return (
     <Link href={`/ads/${ad.slug}`}>
       <li className="cardAd">
-        <img src={ad.picture} alt="img" />
+        <img src={ad.picture} alt={"image of " + ad.title} />
         <div className="desc desc1">
           <div className="row">
             <h2>{ad.title}</h2>
@@ -20,7 +22,9 @@ const CardAd = ({ ad }: any) => {
         <div className="desc desc2">
           <p>vendeur : {ad.owner}</p>
           <p>venez le chercher à : {ad.location}</p>
-          <p>annonce créée le : {ad.createdAt}</p>
+          <p>
+            annonce créée le : <DateFormatter datetime={ad.createdAt} />
+          </p>
         </div>
         <hr />
         <div className="desc desc3">

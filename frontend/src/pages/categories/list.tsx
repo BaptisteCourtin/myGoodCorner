@@ -3,7 +3,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import axios, { CancelTokenSource } from "axios";
 import Category from "@/types/Category";
 import Link from "next/link";
-import LinkCategories from "@/components/LinkCategories";
+import LinkCategories from "@/components/categories/LinkCategories";
 
 const list = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -38,11 +38,8 @@ const list = () => {
   return (
     <main className="categories">
       <h1>Liste des categories</h1>
-      <Link href={"/admin/categories"} className="linkAdmin">
-        Page admin des categories →
-      </Link>
-      <Link href={"/admin/categories/createCategories"} className="linkAdmin">
-        Page admin des categories 2 →
+      <Link href={"/admin/categories/AdminCategories"} className="linkAdmin">
+        Administrer les catégories →
       </Link>
 
       {loading ? (

@@ -3,7 +3,9 @@ import Head from "next/head";
 export default function Home() {
   return (
     <>
-      <main>Bonjour</main>
+      <main>
+        <h1>Bonjour</h1>
+      </main>
     </>
   );
 }

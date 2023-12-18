@@ -1,0 +1,46 @@
+.adminCategories {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  form {
+    margin: 2rem;
+
+    input {
+      margin: 0.5rem;
+
+      background-color: var(--color);
+      color: var(--back);
+      padding: var(--pad);
+      border: none;
+      border-radius: var(--border-radius);
+    }
+
+    .length {
+      text-align: right;
+      margin-bottom: 0.75rem;
+    }
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 2rem;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+
+      button {
+        padding: var(--pad);
+        margin: 0 0.25rem;
+        border-radius: var(--border-radius);
+      }
+    }
+  }
+}

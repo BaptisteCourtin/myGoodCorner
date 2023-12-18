@@ -1,4 +1,5 @@
-import CardAd from "@/components/CardAd";
+import CardAd from "@/components/ads/CardAd";
+import SupprimerCategorie from "@/components/categories/SupprimerCategorie";
 import axiosInstance from "@/lib/axiosInstance";
 import Ad from "@/types/Ad";
 import Category from "@/types/Category";
@@ -43,12 +44,17 @@ const CategoryId = () => {
   return (
     category && (
       <div className="listAdByCategoryId">
-        <Link href={"/categories/list"} className="retour">
+        <Link href={"/categories/list"} className="retourTopButton">
           ← Retour à la liste
         </Link>
+        {category && (
+          <>
+            <SupprimerCategorie id={category?.id} />
+          </>
+        )}
+
         <main>
           <h1>{category.name}</h1>
-          <h2>oui l'id : {id}</h2>
 
           <ul className="cardsAdUl">
             {category.ads.map((ad: Ad) => (

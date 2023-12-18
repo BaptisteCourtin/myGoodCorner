@@ -48,7 +48,7 @@ class AdEntity {
   @Column()
   location: string;
   @Column({ default: Date.now() })
-  createdAt: string;
+  createdAt: number;
   @Column({ nullable: true, unique: true })
   slug: string;
 }

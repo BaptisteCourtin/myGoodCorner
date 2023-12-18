@@ -1,4 +1,6 @@
-import TagListRender from "@/components/TagListRender";
+import DateFormatter from "@/components/DateFormatter";
+import SupprimerAd from "@/components/ads/SupprimerAd";
+import TagListRender from "@/components/tags/TagListRender";
 import axiosInstance from "@/lib/axiosInstance";
 import Ad from "@/types/Ad";
 import Tag from "@/types/Tag";
@@ -42,16 +44,26 @@ const AdSlug = () => {
 
   return (
     <div className="adsId">
-      <Link href={"/ads"} className="retour">
+      <Link href={"/ads"} className="retourTopButton">
         ← Retour à la liste
       </Link>
 
+      {ad && (
+        <>
+          <SupprimerAd id={ad?.id} />
+          <Link href={`/admin/ads/modifierAd/${ad.slug}`} className="modifier">
+            Modifier l'annonce
+          </Link>
+        </>
+      )}
+
       <main>
         {ad == undefined ? (
-          <h2>Chargement en cours</h2>
+          <h1>Chargement en cours</h1>
         ) : (
           <div className="container-info">
-            <img src={ad.picture} alt="img" />
+            <h1>{ad.title}</h1>
+            <img src={ad.picture} alt={"image of " + ad.title} />
             <div className="desc desc1">
               <div className="row">
                 <h2>{ad.title}</h2>
@@ -67,7 +79,8 @@ const AdSlug = () => {
                 <span>venez le chercher à :</span> {ad.location}
               </p>
               <p>
-                <span>annonce créée le :</span> {ad.createdAt}
+                <span>annonce créée le :</span>{" "}
+                <DateFormatter datetime={ad.createdAt} />
               </p>
             </div>
             <div className="desc desc3">

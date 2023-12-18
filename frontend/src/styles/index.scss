@@ -5,11 +5,13 @@
 @import "../components/layout/footer.scss";
 @import "../components/layout/darkLight.scss";
 
-@import "../components/cardAd.scss";
-@import "../components/linkCategories.scss";
-@import "../components/tagListRender.scss";
-@import "../components/searchBar.scss";
+@import "../components/ads/cardAd.scss";
+@import "../components/ads/searchBar.scss";
+@import "../components/categories/linkCategories.scss";
+@import "../components/tags/tagListRender.scss";
+@import "../components/admin/buttonEnregistrer.scss";
 
 @import "../pages/ads/ads.scss";
 @import "../pages/categories/categories.scss";
-@import "../pages/admin/admin.scss";
+@import "../pages/admin/ads/adminAds.scss";
+@import "../pages/admin/categories/adminCategories.scss";

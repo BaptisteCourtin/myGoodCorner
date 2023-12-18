@@ -49,8 +49,6 @@ router.post("/create", async function (req: Request, res: Response) {
     tags,
   }: AdCreateInput = req.body;
 
-  console.log("pass1");
-
   try {
     const result: AdEntity[] = await new AdService().create({
       description,

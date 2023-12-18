@@ -37,6 +37,10 @@ a {
   color: inherit;
 }
 
+textarea {
+  resize: none;
+}
+
 ol,
 ul {
   list-style: none;
@@ -82,7 +86,7 @@ h4 {
   .layoutChild {
     padding: 2rem 0;
 
-    max-width: 1500px;
+    max-width: 1300px;
 
     display: flex;
     flex-direction: column;
@@ -101,6 +105,12 @@ h4 {
 
 footer {
   height: 2rem;
+}
+
+.retourTopButton {
+  width: 100%;
+  padding-left: 2rem;
+  text-align: left;
 }
 
 /* --- */

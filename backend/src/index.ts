@@ -10,7 +10,6 @@ import tagsRouter from "./routes/tags.routes";
 import cors from "cors";
 
 const port = 4000;
-
 const app = express();
 
 app.use(cors({ origin: ["http://localhost:3000"] })); //permet de spécifier QUI a le droit de contacter le backend

@@ -1,0 +1,40 @@
+.adminCreateAds {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin: 2rem;
+    width: 350px;
+
+    input,
+    select,
+    textarea {
+      background-color: var(--color);
+      color: var(--back);
+      padding: var(--pad);
+      border: none;
+      border-radius: var(--border-radius);
+      width: 100%;
+      height: 40px;
+    }
+
+    textarea {
+      height: 100px;
+    }
+  }
+
+  @media screen and (max-width: 420px) {
+    form {
+      margin: 1rem;
+      width: 320px;
+    }
+  }
+}

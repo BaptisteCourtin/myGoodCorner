@@ -6,7 +6,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Ad from "@/types/Ad";
 import axiosInstance from "@/lib/axiosInstance";
 import Link from "next/link";
-import router from "next/router";
 
 const SearchBar = () => {
   const [ads, setAds] = useState<Ad[]>([]);
