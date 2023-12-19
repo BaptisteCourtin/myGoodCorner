@@ -162,7 +162,7 @@ const AdminCategories = () => {
                   onClick={handleDelete}
                   disabled={editMode}
                 >
-                  Supprimer
+                  Supprimer (les annonces aussi)
                 </button>
                 <button data-id={category.id} onClick={handleEdit}>
                   {category.id === actualId ? "Annuler" : "Editer"}

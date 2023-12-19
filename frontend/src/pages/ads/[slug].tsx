@@ -51,9 +51,14 @@ const AdSlug = () => {
       {ad && (
         <>
           <SupprimerAd id={ad?.id} />
-          <Link href={`/admin/ads/modifierAd/${ad.slug}`} className="modifier">
-            Modifier l'annonce
-          </Link>
+          <div className="container-modifier">
+            <Link
+              href={`/admin/ads/modifierAd/${ad.slug}`}
+              className="modifierCeci"
+            >
+              <p>Modifier l'annonce</p>
+            </Link>
+          </div>
         </>
       )}
 

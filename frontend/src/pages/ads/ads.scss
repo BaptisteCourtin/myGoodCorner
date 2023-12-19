@@ -1,10 +1,9 @@
 .adsList {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
-  width: 100%;
 
   a.linkAdmin {
     align-self: flex-end;
@@ -24,6 +23,12 @@
 }
 
 .adsId {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   .container-info {
     display: flex;
     flex-direction: column;
