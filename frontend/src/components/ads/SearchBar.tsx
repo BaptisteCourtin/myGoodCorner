@@ -30,7 +30,7 @@ const SearchBar = () => {
       className="searchBar"
       options={ads}
       groupBy={(option) => option.category.name}
-      getOptionLabel={(option) => option.slug}
+      getOptionLabel={(option) => option.title}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label="Recherche" />}
       onInputChange={handleSearch}

@@ -2,7 +2,7 @@ import React from "react";
 
 const Custom404 = () => {
   return (
-    <div className="404">
+    <div className="page404">
       <h1>404</h1>
       <h2>Cette page n'existe pas</h2>
       <h3>ou n'existe plus</h3>

@@ -10,7 +10,7 @@ const index = () => {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const [tri, setTri] = useState<string>("Date Décroissant");
+  const [tri, setTri] = useState<string>("Date Décroissante");
 
   const getAds = (source: CancelTokenSource) => {
     axiosInstance
@@ -51,10 +51,12 @@ const index = () => {
       <div className="trieur">
         <label htmlFor="tri">Ordre de tri : </label>
         <select id="tri" onChange={(event) => setTri(event.target.value)}>
-          <option value="Date Décroissant">Date Décroissant</option>
-          <option value="Date Croissant">Date Croissant</option>
+          <option value="Date Décroissante">Date Décroissante</option>
+          <option value="Date Croissante">Date Croissante</option>
           <option value="Titre A-Z">Titre A-Z</option>
           <option value="Titre Z-A">Titre Z-A</option>
+          <option value="Prix Décroissant">Prix Décroissant</option>
+          <option value="Date Croissant">Prix Croissant</option>
         </select>
       </div>
 
@@ -64,13 +66,13 @@ const index = () => {
         <ul className="cardsAdUl">
           {ads
             .sort(function compare(a, b) {
-              if (tri === "Date Croissant") {
-                if (a.id < b.id) return -1;
-                else if (a.id > b.id) return 1;
-                return 0;
-              } else if (tri === "Date Décroissant") {
+              if (tri === "Date Décroissante") {
                 if (a.id < b.id) return 1;
                 else if (a.id > b.id) return -1;
+                return 0;
+              } else if (tri === "Date Croissante") {
+                if (a.id < b.id) return -1;
+                else if (a.id > b.id) return 1;
                 return 0;
               } else if (tri === "Titre A-Z") {
                 if (a.title < b.title) return -1;
@@ -79,6 +81,14 @@ const index = () => {
               } else if (tri === "Titre Z-A") {
                 if (a.title < b.title) return 1;
                 else if (a.title > b.title) return -1;
+                return 0;
+              } else if (tri === "Prix Décroissant") {
+                if (a.price < b.price) return 1;
+                else if (a.price > b.price) return -1;
+                return 0;
+              } else if (tri === "Date Croissant") {
+                if (a.price < b.price) return -1;
+                else if (a.price > b.price) return 1;
                 return 0;
               }
               return 0;

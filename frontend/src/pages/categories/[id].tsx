@@ -13,6 +13,7 @@ const CategoryId = () => {
   const { id } = router.query;
 
   const [category, setCategory] = useState<Category>();
+  const [messageError, setMessageError] = useState<Error>();
 
   const getCategories = (source: CancelTokenSource) => {
     axiosInstance
@@ -21,6 +22,9 @@ const CategoryId = () => {
       })
       .then((response) => {
         setCategory(response.data);
+        if (response.data.name == undefined) {
+          setMessageError(response.data);
+        }
       })
       .catch((err) => {
         if (err.code === "ERR_CANCELED") {
@@ -42,28 +46,31 @@ const CategoryId = () => {
   }, [router.isReady]);
 
   return (
-    category && (
-      <div className="listAdByCategoryId">
-        <Link href={"/categories/list"} className="retourTopButton">
-          ← Retour à la liste
-        </Link>
-        {category && (
-          <>
-            <SupprimerCategorie id={category?.id} />
-          </>
-        )}
+    <div className="listAdByCategoryId">
+      {category == undefined ? (
+        <h1>Chargement en cours</h1>
+      ) : messageError !== undefined ? (
+        <h1>{messageError.message}</h1>
+      ) : (
+        <>
+          <Link href={"/categories/list"} className="retourTopButton">
+            ← Retour à la liste
+          </Link>
 
-        <main>
-          <h1>{category.name}</h1>
+          <SupprimerCategorie id={category?.id} />
 
-          <ul className="cardsAdUl">
-            {category.ads.map((ad: Ad) => (
-              <CardAd ad={ad} key={ad.id} />
-            ))}
-          </ul>
-        </main>
-      </div>
-    )
+          <main>
+            <h1>{category.name}</h1>
+
+            <ul className="cardsAdUl">
+              {category.ads.map((ad: Ad) => (
+                <CardAd ad={ad} key={ad.id} />
+              ))}
+            </ul>
+          </main>
+        </>
+      )}
+    </div>
   );
 };
 
