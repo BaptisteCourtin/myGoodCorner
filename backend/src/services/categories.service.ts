@@ -22,12 +22,8 @@ class CategoriesService {
 
   async find(id: number) {
     const result = await this.dbORM.findOne({
-      where: {
-        id: id,
-      },
-      relations: {
-        ads: true,
-      },
+      where: { id },
+      relations: { ads: true },
     });
 
     if (!result) {
@@ -50,8 +46,7 @@ class CategoriesService {
     const category = await this.find(id);
     const newInfos = this.dbORM.merge(category, data);
 
-    await this.dbORM.save(newInfos);
-    return await this.list();
+    return await this.dbORM.save(newInfos);
   }
 
   // ---

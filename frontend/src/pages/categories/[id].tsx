@@ -8,6 +8,30 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
+import { gql, useQuery } from "@apollo/client";
+
+const GET_CATEGORY = gql`
+  query getCategoryById {
+    category {
+      id
+      name
+      ads {
+        id
+        slug
+
+        title
+        description
+        price
+        picture
+
+        owner
+        location
+        createdAt
+      }
+    }
+  }
+`;
+
 const CategoryId = () => {
   const router = useRouter();
   const { id } = router.query;
@@ -15,39 +39,66 @@ const CategoryId = () => {
   const [category, setCategory] = useState<Category>();
   const [messageError, setMessageError] = useState<Error>();
 
-  const getCategories = (source: CancelTokenSource) => {
-    axiosInstance
-      .get(`categories/find/${id}`, {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setCategory(response.data);
-        if (response.data.name == undefined) {
-          setMessageError(response.data);
-        }
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // const getCategories = (source: CancelTokenSource) => {
+  //   axiosInstance
+  //     .get(`categories/find/${id}`, {
+  //       cancelToken: source.token,
+  //     })
+  //     .then((response) => {
+  //       setCategory(response.data);
+  //       if (response.data.name == undefined) {
+  //         setMessageError(response.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       if (err.code === "ERR_CANCELED") {
+  //         console.warn("cancel request");
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  // };
+
+  // useEffect(() => {
+  //   if (router.isReady) {
+  //     const source = axios.CancelToken.source();
+  //     getCategories(source);
+  //     return () => {
+  //       source.cancel();
+  //     };
+  //   }
+  // }, [router.isReady]);
+
+  // -------------------------
+
+  // const { data, error } = useQuery<{ getCategoryById: Category }>(
+  //   GET_CATEGORY,
+  //   {
+  //     variables: { categoryId: id },
+  //     skip: typeof id === "undefined",
+  //   }
+  // );
+
+  // const category2 = data?.getCategoryById;
+
+  // --------------------------
+
+  const { loading, data, error, refetch } = useListCategoriesQuery({
+    onCompleted(data) {
+      console.log("DATA", data);
+    },
+    onError(error) {
+      console.log("ERROR", error);
+    },
+  });
 
   useEffect(() => {
-    if (router.isReady) {
-      const source = axios.CancelToken.source();
-      getCategories(source);
-      return () => {
-        source.cancel();
-      };
-    }
-  }, [router.isReady]);
+    console.log("DATA", data);
+  }, [data]);
 
   return (
     <div className="listAdByCategoryId">
-      {category == undefined ? (
+      {data == undefined ? (
         <h1>Chargement en cours</h1>
       ) : messageError !== undefined ? (
         <h1>{messageError.message}</h1>
@@ -57,13 +108,13 @@ const CategoryId = () => {
             ← Retour à la liste
           </Link>
 
-          <SupprimerCategorie id={category?.id} />
+          <SupprimerCategorie id={data?.id} />
 
           <main>
-            <h1>{category.name}</h1>
+            <h1>{data.name}</h1>
 
             <ul className="cardsAdUl">
-              {category.ads.map((ad: Ad) => (
+              {data.ads.map((ad: Ad) => (
                 <CardAd ad={ad} key={ad.id} />
               ))}
             </ul>
@@ -75,3 +126,10 @@ const CategoryId = () => {
 };
 
 export default CategoryId;
+function useListCategoriesQuery(arg0: {
+  // const { loading, data, error } = useQuery<ListCategoriesQuery>(LIST_CATEGORIES, {
+  onCompleted(data: any): void;
+  onError(error: any): void;
+}): { loading: any; data: any; error: any; refetch: any } {
+  throw new Error("Function not implemented.");
+}

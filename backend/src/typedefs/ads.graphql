@@ -1,0 +1,45 @@
+type Ad {
+  id: ID
+  slug: String
+
+  title: String!
+  description: String
+  price: Float!
+  picture: String
+
+  owner: String
+  location: String
+  createdAt: String
+
+  category: Category
+  tags: [Tag]
+}
+
+input CategoryAdCreate {
+  id: ID
+}
+
+input AdCreateInput {
+  title: String!
+  description: String
+  price: Float!
+  picture: String
+
+  owner: String
+  location: String
+
+  category: CategoryAdCreate
+  tags: [String]
+}
+
+type Query {
+  getListAds(search: String): [Ad]
+  getAdById(id: ID): Ad
+  getAdBySlug(slug: String): Ad
+}
+
+type Mutation {
+  createAd(infos: AdCreateInput): Ad
+  patchAd(infos: AdCreateInput, id: ID): Ad
+  deleteAd(id: ID): Ad
+}

@@ -6,37 +6,66 @@ import axios, { CancelTokenSource } from "axios";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
+import { gql, useQuery } from "@apollo/client";
+
+const GET_LIST_ADS = gql`
+  query GetListAds() {
+    getListAds {
+      id
+      slug
+      title
+      description
+      price
+      picture
+      owner
+      location
+      createdAt
+      category {
+        id
+        name
+      }
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
+
 const index = () => {
   const [ads, setAds] = useState<Ad[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const [tri, setTri] = useState<string>("Date Décroissante");
 
-  const getAds = (source: CancelTokenSource) => {
-    axiosInstance
-      .get<Ad[]>("ads/list", {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setAds(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // const getAds = (source: CancelTokenSource) => {
+  //   axiosInstance
+  //     .get<Ad[]>("ads/list", {
+  //       cancelToken: source.token,
+  //     })
+  //     .then((response) => {
+  //       setAds(response.data);
+  //       setLoading(false);
+  //     })
+  //     .catch((err) => {
+  //       if (err.code === "ERR_CANCELED") {
+  //         console.warn("cancel request");
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  // };
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    getAds(source);
-    return () => {
-      source.cancel();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const source = axios.CancelToken.source();
+  //   getAds(source);
+  //   return () => {
+  //     source.cancel();
+  //   };
+  // }, []);
+
+  const { data, error } = useQuery<{ getListAds: Ad[] }>(GET_LIST_ADS);
+  const adsList = data?.getListAds;
 
   return (
     <main className="adsList">
@@ -60,11 +89,11 @@ const index = () => {
         </select>
       </div>
 
-      {loading ? (
+      {adsList == undefined ? (
         <h2>Chargement en cours</h2>
       ) : (
         <ul className="cardsAdUl">
-          {ads
+          {adsList
             .sort(function compare(a, b) {
               if (tri === "Date Décroissante") {
                 if (a.id < b.id) return 1;

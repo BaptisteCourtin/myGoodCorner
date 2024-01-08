@@ -1,16 +1,34 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import Ad from "./Ad.entity";
+import { Field, ID, InputType, ObjectType } from "type-graphql";
+
+import AdEntity from "./Ad.entity";
 
 @Entity("category")
+@ObjectType()
 class CategoryEntity {
+  @Field(() => ID)
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Field()
   @Column({ unique: true })
   name: string;
 
-  @OneToMany(() => Ad, (ad) => ad.category)
-  ads: Ad[];
+  @Field(() => [AdEntity])
+  @OneToMany(() => AdEntity, (ad) => ad.category)
+  ads: AdEntity[];
+}
+
+@InputType()
+export class CategoryCreateEntity {
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class CategoryUpdateEntity {
+  @Field({ nullable: true })
+  name: string;
 }
 
 export default CategoryEntity;

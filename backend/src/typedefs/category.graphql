@@ -1,0 +1,20 @@
+type Category {
+  id: ID
+  name: String!
+  ads: [Ad]
+}
+
+input CategoryCreateInput {
+  name: String
+}
+
+type Query {
+  getListCategories: [Category]
+  getCategoryById(id: ID): Category
+}
+
+type Mutation {
+  createCategory(infos: CategoryCreateInput): Category
+  patchCategory(infos: CategoryCreateInput, id: ID): Category
+  deleteCategory(id: ID): Category
+}

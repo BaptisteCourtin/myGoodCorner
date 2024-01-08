@@ -26,9 +26,7 @@ class TagsService {
 
   async find(id: number) {
     const result = await this.dbORM.findOne({
-      where: {
-        id: id,
-      },
+      where: { id },
     });
 
     if (!result) {

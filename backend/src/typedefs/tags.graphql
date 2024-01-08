@@ -1,0 +1,19 @@
+type Tag {
+  id: ID
+  name: String!
+}
+
+input TagCreateInput {
+  name: String
+}
+
+type Query {
+  getListTags: [Tag]
+  getTagById(id: ID): Tag
+}
+
+type Mutation {
+  createTag(infos: TagCreateInput): Tag
+  patchTag(infos: TagCreateInput, id: ID): Tag
+  deleteTag(id: ID): Tag
+}

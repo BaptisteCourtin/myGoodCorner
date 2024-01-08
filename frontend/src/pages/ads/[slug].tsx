@@ -8,48 +8,80 @@ import axios, { CancelTokenSource } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { Message } from "react-hook-form";
+
+import { gql, useQuery } from "@apollo/client";
+
+const GET_AD_DETAIL = gql`
+  query GetAdById($adSlug: String!) {
+    getAdById {
+      id
+      slug
+      title
+      description
+      price
+      picture
+      owner
+      location
+      createdAt
+      category {
+        id
+        name
+      }
+      tags {
+        id
+        name
+      }
+    }
+  }
+`;
 
 const AdSlug = () => {
   const router = useRouter();
   const { slug } = router.query;
 
-  const [ad, setAd] = useState<Ad>();
+  // const [ad, setAd] = useState<Ad>();
   const [messageError, setMessageError] = useState<Error>();
 
-  const getAd = (source: CancelTokenSource) => {
-    axiosInstance
-      .get(`ads/findBySlug/${slug}`, {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setAd(response.data);
-        if (response.data.title == undefined) {
-          setMessageError(response.data);
-        }
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // const getAd = (source: CancelTokenSource) => {
+  //   axiosInstance
+  //     .get(`ads/findBySlug/${slug}`, {
+  //       cancelToken: source.token,
+  //     })
+  //     .then((response) => {
+  //       setAd(response.data);
+  //       if (response.data.title == undefined) {
+  //         setMessageError(response.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       if (err.code === "ERR_CANCELED") {
+  //         console.warn("cancel request");
+  //       } else {
+  //         console.error(err);
+  //       }
+  //     });
+  // };
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    if (router.isReady) {
-      getAd(source);
-    }
-    return () => {
-      source.cancel();
-    };
-  }, [router.isReady]);
+  // useEffect(() => {
+  //   const source = axios.CancelToken.source();
+  //   if (router.isReady) {
+  //     getAd(source);
+  //   }
+  //   return () => {
+  //     source.cancel();
+  //   };
+  // }, [router.isReady]);
+
+  const { data, error } = useQuery<{ getAdBySlug: Ad }>(GET_AD_DETAIL, {
+    variables: { adSlug: slug },
+    skip: typeof slug === "undefined",
+  });
+
+  const ad2 = data?.getAdBySlug;
 
   return (
     <div className="adsId">
-      {ad == undefined ? (
+      {ad2 == undefined ? (
         <h1>Chargement en cours</h1>
       ) : messageError !== undefined ? (
         <h1>{messageError.message}</h1>
@@ -59,7 +91,7 @@ const AdSlug = () => {
             ← Retour à la liste
           </Link>
 
-          <SupprimerAd id={ad?.id} />
+          <SupprimerAd id={ad2?.id} />
           {/* <div className="container-modifier">
             <Link
               href={`/admin/ads/modifierAd/${ad.slug}`}
@@ -71,38 +103,38 @@ const AdSlug = () => {
 
           <main>
             <div className="container-info">
-              <h1>{ad.title}</h1>
-              <img src={ad.picture} alt={"image of " + ad.title} />
+              <h1>{ad2.title}</h1>
+              <img src={ad2.picture} alt={"image of " + ad2.title} />
               <div className="desc desc1">
                 <div className="row">
-                  <h2>{ad.title}</h2>
-                  <h3>{ad.price}€</h3>
+                  <h2>{ad2.title}</h2>
+                  <h3>{ad2.price}€</h3>
                 </div>
-                <p>{ad.description}</p>
+                <p>{ad2.description}</p>
               </div>
               <div className="desc desc2">
                 <p>
-                  <span>vendeur :</span> {ad.owner}
+                  <span>vendeur :</span> {ad2.owner}
                 </p>
                 <p>
-                  <span>venez le chercher à :</span> {ad.location}
+                  <span>venez le chercher à :</span> {ad2.location}
                 </p>
                 <p>
                   <span>annonce créée le :</span>{" "}
-                  <DateFormatter datetime={ad.createdAt} />
+                  <DateFormatter datetime={ad2.createdAt} />
                 </p>
               </div>
               <div className="desc desc3">
-                {ad.category && (
+                {ad2.category && (
                   <Link
-                    href={`/categories/${ad.category.id}`}
+                    href={`/categories/${ad2.category.id}`}
                     className="linkCategorie"
                   >
-                    {ad.category.name}
+                    {ad2.category.name}
                   </Link>
                 )}
                 <div className="container-tags">
-                  {ad.tags?.map((tag: Tag) => (
+                  {ad2.tags?.map((tag: Tag) => (
                     <TagListRender name={tag.name} key={tag.id}></TagListRender>
                   ))}
                 </div>
