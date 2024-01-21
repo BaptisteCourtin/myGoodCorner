@@ -2,6 +2,7 @@ import {
   BeforeInsert,
   BeforeUpdate,
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
@@ -59,8 +60,8 @@ class AdEntity {
   location: string;
 
   @Field(() => String)
-  @Column({ default: Date.now() })
-  createdAt: number;
+  @CreateDateColumn()
+  createdAt: Date;
 
   @Field(() => CategoryEntity)
   @ManyToOne(() => CategoryEntity, (c) => c.ads, {
@@ -69,8 +70,9 @@ class AdEntity {
   }) //j'interdis de créer une annonce sans lui attribuer une catégorie, et je demande à supprimer l'annonce lorsque la catégorie est supprimée!
   category: CategoryEntity;
 
+  @Field(() => TagEntity)
   @JoinTable()
-  @ManyToMany(() => TagEntity, (t) => t.ads, { cascade: ["insert", "update"] })
+  @ManyToMany(() => TagEntity, { cascade: ["insert", "update"] })
   tags: TagEntity[];
 }
 

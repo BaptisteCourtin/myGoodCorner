@@ -1,6 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
 const config: CodegenConfig = {
+  overwrite: true,
   schema: "http://localhost:4000",
   documents: [
     "src/requetes/queries/*.queries.ts",
@@ -8,10 +9,6 @@ const config: CodegenConfig = {
   ],
   generates: {
     "./src/types/graphql.ts": {
-      config: {
-        useIndexSignature: true,
-        // maybeValue: "T | undefined",
-      },
       plugins: [
         "typescript",
         "typescript-operations",

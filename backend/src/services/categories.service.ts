@@ -1,8 +1,11 @@
 import { Repository } from "typeorm";
-import datasource from "../lib/datasource";
 
-import { CategoryCreateInput } from "../types/category";
-import CategoryEntity from "../entities/Category.entity";
+import CategoryEntity, {
+  CategoryCreateEntity,
+  CategoryUpdateEntity,
+} from "../entities/Category.entity";
+
+import datasource from "../lib/datasource";
 
 class CategoriesService {
   dbORM: Repository<CategoryEntity>;
@@ -34,7 +37,7 @@ class CategoriesService {
 
   // ---
 
-  async create(data: CategoryCreateInput) {
+  async create(data: CategoryCreateEntity) {
     const newCategory = this.dbORM.create(data);
     await this.dbORM.save(newCategory);
     return await this.list();

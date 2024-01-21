@@ -20,11 +20,9 @@ export default class TagResolver {
 
   // ---
 
-  @Mutation(() => [TagEntity])
+  @Mutation(() => TagEntity)
   async createTag(@Arg("infos") infos: TagCreateEntity) {
-    const result: TagEntity[] = await new TagsService().create({
-      infos,
-    });
+    const result: TagEntity[] = await new TagsService().create(infos);
     return result;
   }
 

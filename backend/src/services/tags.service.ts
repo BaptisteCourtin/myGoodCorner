@@ -1,8 +1,11 @@
 import { In, Repository } from "typeorm";
-import datasource from "../lib/datasource";
 
-import { TagCreateInput } from "../types/tag";
-import TagEntity from "../entities/Tag.entity";
+import TagEntity, {
+  TagCreateEntity,
+  TagUpdateEntity,
+} from "../entities/Tag.entity";
+
+import datasource from "../lib/datasource";
 
 class TagsService {
   dbORM: Repository<TagEntity>;
@@ -37,7 +40,7 @@ class TagsService {
 
   // ---
 
-  async create(data: TagCreateInput) {
+  async create(data: TagCreateEntity) {
     const newTag = this.dbORM.create(data);
     await this.dbORM.save(newTag);
     return await this.list();

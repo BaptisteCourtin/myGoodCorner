@@ -7,7 +7,7 @@ import AdsService from "../services/ads.service";
 
 export default class AdResolver {
   @Query(() => [AdEntity])
-  async getListAd(@Arg("search") search: string) {
+  async getListAd(@Arg("search", { nullable: true }) search: string) {
     const result: AdEntity[] = await new AdsService().list(
       search as any as string | undefined
     );
@@ -28,12 +28,9 @@ export default class AdResolver {
 
   // ---
 
-  @Mutation(() => [AdEntity])
+  @Mutation(() => AdEntity)
   async createAd(@Arg("infos") infos: AdCreateEntity) {
-    const result: AdEntity = await new AdsService().create({
-      infos,
-      tags: [],
-    });
+    const result: AdEntity = await new AdsService().create(infos);
     return result;
   }
 

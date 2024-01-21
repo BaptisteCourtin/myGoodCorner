@@ -20,11 +20,11 @@ export default class CategoryResolver {
 
   // ---
 
-  @Mutation(() => [CategoryEntity])
+  @Mutation(() => CategoryEntity)
   async createCategory(@Arg("infos") infos: CategoryCreateEntity) {
-    const result: CategoryEntity[] = await new CategoriesService().create({
-      infos,
-    });
+    const result: CategoryEntity[] = await new CategoriesService().create(
+      infos
+    );
     return result;
   }
 

@@ -9,8 +9,8 @@ class TagEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true, length: 100 })
   @Field()
+  @Column({ unique: true, length: 100 })
   name: string;
 
   @Field(() => [AdEntity])
@@ -26,7 +26,7 @@ export class TagCreateEntity {
 
 @InputType()
 export class TagUpdateEntity {
-  @Field({ nullable: true })
+  @Field()
   name: string;
 }
 

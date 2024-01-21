@@ -1,16 +1,15 @@
 import { Like, Repository } from "typeorm";
-import { AdCreateInput } from "../types/ad";
 
 import AdEntity, {
   AdCreateEntity,
   AdUpdateEntity,
 } from "../entities/Ad.entity";
 import TagEntity from "../entities/Tag.entity";
+import CategoryEntity from "../entities/Category.entity";
 
 import datasource from "../lib/datasource";
 import CategoriesService from "./categories.service";
 import TagsService from "./tags.service";
-import CategoryEntity from "../entities/Category.entity";
 
 class AdsService {
   dbORM: Repository<AdEntity>;
@@ -73,15 +72,15 @@ class AdsService {
 
   // ---
 
-  async create(data: AdCreateInput) {
+  async create(data: AdCreateEntity) {
+    const category: CategoryEntity = await new CategoriesService().find(
+      +data.category.id
+    );
+
     let tags: TagEntity[] = [];
     if (data.tags?.length) {
-      tags = await new TagsService().list();
+      tags = await new TagsService().list(data.tags);
     }
-
-    const category: CategoryEntity = await new CategoriesService().find(
-      data.category
-    );
 
     const newAd = this.dbORM.create({ ...data, category, tags }); //newAd attend une categorie. Si la catégorie n'est pas trouvée, le find juste au dessus lèvera une erreur, sinon nous arriverons ici
     return await this.dbORM.save(newAd);
