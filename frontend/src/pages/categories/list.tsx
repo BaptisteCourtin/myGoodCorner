@@ -1,39 +1,30 @@
-import React, { useEffect, useState } from "react";
-import axiosInstance from "@/lib/axiosInstance";
-import axios, { CancelTokenSource } from "axios";
-import Category from "@/types/Category";
+import React from "react";
 import Link from "next/link";
 import LinkCategories from "@/components/categories/LinkCategories";
 
+import { useQuery } from "@apollo/client";
+import { GET_LIST_CATEGORIES } from "@/requetes/queries/categories.queries";
+import {
+  GetListCategoriesQuery,
+  GetListCategoriesQueryVariables,
+  useGetListCategoriesQuery,
+} from "@/types/graphql";
+
 const list = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  // const { data, loading, error } = useQuery<
+  //   GetListCategoriesQuery,
+  //   GetListCategoriesQueryVariables
+  // >(GET_LIST_CATEGORIES);
 
-  const getCategories = (source: CancelTokenSource) => {
-    axiosInstance
-      .get("categories/list", {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setCategories(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    getCategories(source);
-    return () => {
-      source.cancel();
-    };
-  }, []);
+  // avec ce qui a été généré dans graphql.ts
+  const { data, loading, error } = useGetListCategoriesQuery({
+    // onCompleted(data) {
+    //   console.log("data", data);
+    // },
+    // onError(err) {
+    //   console.log("error", err);
+    // },
+  });
 
   return (
     <main className="categories">
@@ -42,11 +33,13 @@ const list = () => {
         Administrer les catégories →
       </Link>
 
-      {loading ? (
+      {error ? (
+        <h2>Une erreur... (déso)</h2>
+      ) : loading ? (
         <h2>Chargement en cours</h2>
       ) : (
         <ul>
-          {categories.map((category) => (
+          {data?.getListCategories.map((category) => (
             <li key={category.id}>
               <LinkCategories
                 id={category.id}

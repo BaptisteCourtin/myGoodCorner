@@ -13,3 +13,6 @@ enlever dossier typedefs (typegraphql)
 enlever dossier types (typegraphql)
 
 <!-- FRONT -->
+
+disparition de axios (graphql)
+enlever dossier types (typegraphql)

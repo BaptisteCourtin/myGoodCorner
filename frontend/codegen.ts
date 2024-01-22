@@ -9,6 +9,7 @@ const config: CodegenConfig = {
   ],
   generates: {
     "./src/types/graphql.ts": {
+      // preset: "client",
       plugins: [
         "typescript",
         "typescript-operations",
@@ -17,4 +18,5 @@ const config: CodegenConfig = {
     },
   },
 };
+
 export default config;
