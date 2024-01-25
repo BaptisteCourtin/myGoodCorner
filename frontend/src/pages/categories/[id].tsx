@@ -5,39 +5,26 @@ import Ad from "@/types/Ad";
 import Category from "@/types/Category";
 import axios, { CancelTokenSource } from "axios";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
-import { gql, useQuery } from "@apollo/client";
-
-const GET_CATEGORY = gql`
-  query getCategoryById {
-    category {
-      id
-      name
-      ads {
-        id
-        slug
-
-        title
-        description
-        price
-        picture
-
-        owner
-        location
-        createdAt
-      }
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_BY_ID } from "@/requetes/queries/categories.queries";
+import {
+  AdEntity,
+  GetAdByIdQuery,
+  useGetCategoryByIdLazyQuery,
+  useGetCategoryByIdQuery,
+} from "@/types/graphql";
 
 const CategoryId = () => {
   const router = useRouter();
   const { id } = router.query;
 
-  const [category, setCategory] = useState<Category>();
-  const [messageError, setMessageError] = useState<Error>();
+  // ------------------------- EXPRESS
+
+  // const [category, setCategory] = useState<Category>();
+  // const [messageError, setMessageError] = useState<Error>();
 
   // const getCategories = (source: CancelTokenSource) => {
   //   axiosInstance
@@ -69,54 +56,60 @@ const CategoryId = () => {
   //   }
   // }, [router.isReady]);
 
-  // -------------------------
+  // ------------------------- GRAPHQL
 
-  // const { data, error } = useQuery<{ getCategoryById: Category }>(
-  //   GET_CATEGORY,
-  //   {
-  //     variables: { categoryId: id },
-  //     skip: typeof id === "undefined",
-  //   }
-  // );
+  // const { data, loading, error } = useGetCategoryByIdQuery({
+  //   variables: {
+  //     id: id as string,
+  //   },
+  //   onCompleted(data) {
+  //     console.log("data", data);
+  //   },
+  //   onError(err) {
+  //     console.log("error", err);
+  //   },
+  // });
 
-  // const category2 = data?.getCategoryById;
-
-  // --------------------------
-
-  const { loading, data, error, refetch } = useListCategoriesQuery({
-    onCompleted(data) {
-      console.log("DATA", data);
-    },
-    onError(error) {
-      console.log("ERROR", error);
-    },
-  });
+  const [getCategoryById, { data, loading, error }] =
+    useGetCategoryByIdLazyQuery();
 
   useEffect(() => {
-    console.log("DATA", data);
-  }, [data]);
+    if (router.isReady) {
+      getCategoryById({
+        variables: { id: id as string },
+        onCompleted(data) {
+          console.log("data", data);
+        },
+        onError(err) {
+          console.log("error", err);
+        },
+      });
+    }
+  }, [router.isReady]);
 
   return (
     <div className="listAdByCategoryId">
-      {data == undefined ? (
-        <h1>Chargement en cours</h1>
-      ) : messageError !== undefined ? (
-        <h1>{messageError.message}</h1>
+      {error ? (
+        <h2>Une erreur... (déso)</h2>
+      ) : loading ? (
+        <h2>Chargement en cours</h2>
       ) : (
         <>
           <Link href={"/categories/list"} className="retourTopButton">
             ← Retour à la liste
           </Link>
 
-          <SupprimerCategorie id={data?.id} />
+          <SupprimerCategorie id={data?.getCategoryById.id} />
 
           <main>
-            <h1>{data.name}</h1>
+            <h1>{data?.getCategoryById.name}</h1>
 
             <ul className="cardsAdUl">
-              {data.ads.map((ad: Ad) => (
-                <CardAd ad={ad} key={ad.id} />
-              ))}
+              {data?.getCategoryById.ads.map(
+                (ad: GetAdByIdQuery["getAdById"]) => (
+                  <CardAd ad={ad} key={ad.id} />
+                )
+              )}
             </ul>
           </main>
         </>
@@ -126,10 +119,3 @@ const CategoryId = () => {
 };
 
 export default CategoryId;
-function useListCategoriesQuery(arg0: {
-  // const { loading, data, error } = useQuery<ListCategoriesQuery>(LIST_CATEGORIES, {
-  onCompleted(data: any): void;
-  onError(error: any): void;
-}): { loading: any; data: any; error: any; refetch: any } {
-  throw new Error("Function not implemented.");
-}

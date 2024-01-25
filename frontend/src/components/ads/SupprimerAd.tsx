@@ -3,17 +3,7 @@ import router from "next/router";
 import React from "react";
 
 const SupprimerAd = ({ id }: any) => {
-  const deleteThisAd = () => {
-    axiosInstance
-      .delete(`/ads/delete/${id}`)
-      .then(() => {
-        router.push("/ads");
-        console.log("C'est bon pour nous");
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
+  const deleteThisAd = () => {};
 
   return (
     <div className="adminDeleteAd">

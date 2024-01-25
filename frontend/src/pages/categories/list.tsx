@@ -37,7 +37,7 @@ const list = () => {
         <h2>Une erreur... (déso)</h2>
       ) : loading ? (
         <h2>Chargement en cours</h2>
-      ) : (
+      ) : data?.getListCategories.length ? (
         <ul>
           {data?.getListCategories.map((category) => (
             <li key={category.id}>
@@ -48,6 +48,8 @@ const list = () => {
             </li>
           ))}
         </ul>
+      ) : (
+        <h2>Pas de catégory</h2>
       )}
     </main>
   );

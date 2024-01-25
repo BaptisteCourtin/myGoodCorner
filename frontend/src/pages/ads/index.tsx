@@ -7,65 +7,13 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 import { gql, useQuery } from "@apollo/client";
-
-const GET_LIST_ADS = gql`
-  query GetListAds() {
-    getListAds {
-      id
-      slug
-      title
-      description
-      price
-      picture
-      owner
-      location
-      createdAt
-      category {
-        id
-        name
-      }
-      tags {
-        id
-        name
-      }
-    }
-  }
-`;
+import { GetAdByIdQuery, useGetListAdQuery } from "@/types/graphql";
 
 const index = () => {
-  const [ads, setAds] = useState<Ad[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
   const [tri, setTri] = useState<string>("Date Décroissante");
 
-  // const getAds = (source: CancelTokenSource) => {
-  //   axiosInstance
-  //     .get<Ad[]>("ads/list", {
-  //       cancelToken: source.token,
-  //     })
-  //     .then((response) => {
-  //       setAds(response.data);
-  //       setLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       if (err.code === "ERR_CANCELED") {
-  //         console.warn("cancel request");
-  //       } else {
-  //         console.error(err);
-  //       }
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   const source = axios.CancelToken.source();
-  //   getAds(source);
-  //   return () => {
-  //     source.cancel();
-  //   };
-  // }, []);
-
-  const { data, error } = useQuery<{ getListAds: Ad[] }>(GET_LIST_ADS);
-  const adsList = data?.getListAds;
+  // avec ce qui a été généré dans graphql.ts
+  const { data, loading, error } = useGetListAdQuery({});
 
   return (
     <main className="adsList">
@@ -89,12 +37,15 @@ const index = () => {
         </select>
       </div>
 
-      {adsList == undefined ? (
+      {error ? (
+        <h2>Une erreur... (déso)</h2>
+      ) : loading ? (
         <h2>Chargement en cours</h2>
-      ) : (
+      ) : data?.getListAd.length ? (
         <ul className="cardsAdUl">
-          {adsList
-            .sort(function compare(a, b) {
+          {data?.getListAd
+            .slice()
+            .sort(function compare(a: any, b: any) {
               if (tri === "Date Décroissante") {
                 if (a.id < b.id) return 1;
                 else if (a.id > b.id) return -1;
@@ -122,13 +73,18 @@ const index = () => {
               }
               return 0;
             })
-            .map((ad) => (
+            .map((ad: GetAdByIdQuery["getAdById"]) => (
               <CardAd ad={ad} key={ad.id} />
             ))}
         </ul>
+      ) : (
+        <h2>Pas de ads</h2>
       )}
     </main>
   );
 };
 
 export default index;
+function useGetListAdsQuery(arg0: {}): { data: any; loading: any; error: any } {
+  throw new Error("Function not implemented.");
+}

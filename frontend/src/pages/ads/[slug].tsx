@@ -11,66 +11,9 @@ import { useEffect, useState } from "react";
 
 import { gql, useQuery } from "@apollo/client";
 
-const GET_AD_DETAIL = gql`
-  query GetAdById($adSlug: String!) {
-    getAdById {
-      id
-      slug
-      title
-      description
-      price
-      picture
-      owner
-      location
-      createdAt
-      category {
-        id
-        name
-      }
-      tags {
-        id
-        name
-      }
-    }
-  }
-`;
-
 const AdSlug = () => {
   const router = useRouter();
   const { slug } = router.query;
-
-  // const [ad, setAd] = useState<Ad>();
-  const [messageError, setMessageError] = useState<Error>();
-
-  // const getAd = (source: CancelTokenSource) => {
-  //   axiosInstance
-  //     .get(`ads/findBySlug/${slug}`, {
-  //       cancelToken: source.token,
-  //     })
-  //     .then((response) => {
-  //       setAd(response.data);
-  //       if (response.data.title == undefined) {
-  //         setMessageError(response.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       if (err.code === "ERR_CANCELED") {
-  //         console.warn("cancel request");
-  //       } else {
-  //         console.error(err);
-  //       }
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   const source = axios.CancelToken.source();
-  //   if (router.isReady) {
-  //     getAd(source);
-  //   }
-  //   return () => {
-  //     source.cancel();
-  //   };
-  // }, [router.isReady]);
 
   const { data, error } = useQuery<{ getAdBySlug: Ad }>(GET_AD_DETAIL, {
     variables: { adSlug: slug },

@@ -5,8 +5,14 @@ import Tag from "@/types/Tag";
 import LinkCategories from "../categories/LinkCategories";
 import TagListRender from "../tags/TagListRender";
 import DateFormatter from "../DateFormatter";
+import {
+  GetAdByIdQuery,
+  GetCategoryByIdQuery,
+  GetTagByIdQuery,
+  TagEntity,
+} from "@/types/graphql";
 
-const CardAd = ({ ad }: any) => {
+const CardAd = ({ ad }: { ad: GetAdByIdQuery["getAdById"] }) => {
   return (
     <Link href={`/ads/${ad.slug}`}>
       <li className="cardAd">
@@ -35,7 +41,7 @@ const CardAd = ({ ad }: any) => {
             ></LinkCategories>
           )}
           <div className="container-tags">
-            {ad.tags?.map((tag: Tag) => (
+            {ad.tags?.map((tag: GetTagByIdQuery["getTagById"]) => (
               <TagListRender name={tag.name} key={tag.id}></TagListRender>
             ))}
           </div>

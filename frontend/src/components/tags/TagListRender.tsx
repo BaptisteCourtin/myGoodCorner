@@ -1,6 +1,7 @@
+import { GetTagByIdQuery } from "@/types/graphql";
 import React from "react";
 
-const TagListRender = ({ name }: any) => {
+const TagListRender = ({ name }: { name: String }) => {
   return <p>#{name}</p>;
 };
 
