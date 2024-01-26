@@ -1,16 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import Tag from "@/types/Tag";
 
 import LinkCategories from "../categories/LinkCategories";
 import TagListRender from "../tags/TagListRender";
 import DateFormatter from "../DateFormatter";
-import {
-  GetAdByIdQuery,
-  GetCategoryByIdQuery,
-  GetTagByIdQuery,
-  TagEntity,
-} from "@/types/graphql";
+
+import { GetAdByIdQuery, GetTagByIdQuery } from "@/types/graphql";
 
 const CardAd = ({ ad }: { ad: GetAdByIdQuery["getAdById"] }) => {
   return (

@@ -32,23 +32,22 @@ class CategoriesService {
     if (!result) {
       throw new Error("La category n'existe pas");
     }
+
     return result;
   }
 
   // ---
 
-  async create(data: CategoryCreateEntity) {
+  async create(data: Partial<CategoryCreateEntity>) {
     const newCategory = this.dbORM.create(data);
-    await this.dbORM.save(newCategory);
-    return await this.list();
+    return await this.dbORM.save(newCategory);
   }
 
   // ---
 
   async patch(id: number, data: Partial<CategoryEntity>) {
     const category = await this.find(id);
-    const newInfos = this.dbORM.merge(category, data);
-
+    const newInfos = this.dbORM.merge(category, data); // le merge permet d'ignorer les clés qui n'existent pas dans l'entité! vous voyez l'intéret d'un ORM? Tout est lié
     return await this.dbORM.save(newInfos);
   }
 
@@ -57,7 +56,7 @@ class CategoriesService {
   async delete(id: number) {
     const category = await this.find(id);
     await this.dbORM.remove(category);
-    return await this.list();
+    return "CATEGORY DELETE";
   }
 }
 

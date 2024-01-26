@@ -1,12 +1,9 @@
+import React, { useState } from "react";
+import Link from "next/link";
+
 import CardAd from "@/components/ads/CardAd";
 import SearchBar from "@/components/ads/SearchBar";
-import axiosInstance from "@/lib/axiosInstance";
-import Ad from "@/types/Ad";
-import axios, { CancelTokenSource } from "axios";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 
-import { gql, useQuery } from "@apollo/client";
 import { GetAdByIdQuery, useGetListAdQuery } from "@/types/graphql";
 
 const index = () => {
@@ -85,6 +82,3 @@ const index = () => {
 };
 
 export default index;
-function useGetListAdsQuery(arg0: {}): { data: any; loading: any; error: any } {
-  throw new Error("Function not implemented.");
-}

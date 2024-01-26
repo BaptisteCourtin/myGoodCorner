@@ -22,16 +22,16 @@ export default class CategoryResolver {
 
   @Mutation(() => CategoryEntity)
   async createCategory(@Arg("infos") infos: CategoryCreateEntity) {
-    const result: CategoryEntity[] = await new CategoriesService().create(
-      infos
-    );
+    const result: CategoryEntity = await new CategoriesService().create({
+      ...infos,
+    });
     return result;
   }
 
   @Mutation(() => CategoryEntity)
   async patchCategory(
     @Arg("id") id: string,
-    @Arg("infos") infos: CategoryCreateEntity
+    @Arg("infos") infos: CategoryUpdateEntity
   ) {
     const result: CategoryEntity = await new CategoriesService().patch(
       +id,
@@ -40,9 +40,9 @@ export default class CategoryResolver {
     return result;
   }
 
-  @Mutation(() => [CategoryEntity])
+  @Mutation(() => String)
   async deleteCategory(@Arg("id") id: string) {
-    const result: CategoryEntity[] = await new CategoriesService().delete(+id);
+    const result = await new CategoriesService().delete(+id);
     return result;
   }
 }

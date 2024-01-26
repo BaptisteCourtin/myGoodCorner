@@ -10,8 +10,9 @@ export const CREATE_CATEGORY = gql`
 `;
 
 export const PATCH_CATEGORY = gql`
-  mutation PatchCategory($infos: CategoryCreateEntity!, $id: String!) {
+  mutation PatchCategory($infos: CategoryUpdateEntity!, $id: String!) {
     patchCategory(infos: $infos, id: $id) {
+      id
       name
     }
   }
@@ -19,8 +20,6 @@ export const PATCH_CATEGORY = gql`
 
 export const DELETE_CATEGORY = gql`
   mutation DeleteCategory($id: String!) {
-    deleteCategory(id: $id) {
-      id
-    }
+    deleteCategory(id: $id)
   }
 `;

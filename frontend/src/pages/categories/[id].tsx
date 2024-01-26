@@ -58,18 +58,6 @@ const CategoryId = () => {
 
   // ------------------------- GRAPHQL
 
-  // const { data, loading, error } = useGetCategoryByIdQuery({
-  //   variables: {
-  //     id: id as string,
-  //   },
-  //   onCompleted(data) {
-  //     console.log("data", data);
-  //   },
-  //   onError(err) {
-  //     console.log("error", err);
-  //   },
-  // });
-
   const [getCategoryById, { data, loading, error }] =
     useGetCategoryByIdLazyQuery();
 
@@ -77,9 +65,6 @@ const CategoryId = () => {
     if (router.isReady) {
       getCategoryById({
         variables: { id: id as string },
-        onCompleted(data) {
-          console.log("data", data);
-        },
         onError(err) {
           console.log("error", err);
         },

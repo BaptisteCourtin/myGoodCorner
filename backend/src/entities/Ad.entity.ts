@@ -70,7 +70,7 @@ class AdEntity {
   }) //j'interdis de créer une annonce sans lui attribuer une catégorie, et je demande à supprimer l'annonce lorsque la catégorie est supprimée!
   category: CategoryEntity;
 
-  @Field(() => TagEntity)
+  @Field(() => [TagEntity], { nullable: true })
   @JoinTable()
   @ManyToMany(() => TagEntity, { cascade: ["insert", "update"] })
   tags: TagEntity[];

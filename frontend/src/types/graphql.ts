@@ -30,7 +30,7 @@ export type AdCreateEntity = {
 
 export type AdEntity = {
   __typename?: 'AdEntity';
-  category?: Maybe<CategoryEntity>;
+  category: CategoryEntity;
   createdAt: Scalars['String']['output'];
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -65,13 +65,17 @@ export type CategoryEntity = {
   name: Scalars['String']['output'];
 };
 
+export type CategoryUpdateEntity = {
+  name: Scalars['String']['input'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createAd: AdEntity;
   createCategory: CategoryEntity;
   createTag: TagEntity;
   deleteAd: Array<AdEntity>;
-  deleteCategory: Array<CategoryEntity>;
+  deleteCategory: Scalars['String']['output'];
   deleteTag: Array<TagEntity>;
   patchAd: AdEntity;
   patchCategory: CategoryEntity;
@@ -117,7 +121,7 @@ export type MutationPatchAdArgs = {
 
 export type MutationPatchCategoryArgs = {
   id: Scalars['String']['input'];
-  infos: CategoryCreateEntity;
+  infos: CategoryUpdateEntity;
 };
 
 
@@ -182,7 +186,7 @@ export type CreateAdMutationVariables = Exact<{
 }>;
 
 
-export type CreateAdMutation = { __typename?: 'Mutation', createAd: { __typename?: 'AdEntity', id: string, description: string, createdAt: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category?: { __typename?: 'CategoryEntity', name: string, id: string } | null, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null } };
+export type CreateAdMutation = { __typename?: 'Mutation', createAd: { __typename?: 'AdEntity', id: string, description: string, createdAt: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category: { __typename?: 'CategoryEntity', name: string, id: string }, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null } };
 
 export type PatchAdMutationVariables = Exact<{
   infos: AdUpdateEntity;
@@ -207,19 +211,19 @@ export type CreateCategoryMutationVariables = Exact<{
 export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory: { __typename?: 'CategoryEntity', id: string, name: string } };
 
 export type PatchCategoryMutationVariables = Exact<{
-  infos: CategoryCreateEntity;
+  infos: CategoryUpdateEntity;
   id: Scalars['String']['input'];
 }>;
 
 
-export type PatchCategoryMutation = { __typename?: 'Mutation', patchCategory: { __typename?: 'CategoryEntity', name: string } };
+export type PatchCategoryMutation = { __typename?: 'Mutation', patchCategory: { __typename?: 'CategoryEntity', id: string, name: string } };
 
 export type DeleteCategoryMutationVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: Array<{ __typename?: 'CategoryEntity', id: string }> };
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: string };
 
 export type CreateTagMutationVariables = Exact<{
   infos: TagCreateEntity;
@@ -246,21 +250,21 @@ export type DeleteTagMutation = { __typename?: 'Mutation', deleteTag: Array<{ __
 export type GetListAdQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetListAdQuery = { __typename?: 'Query', getListAd: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category?: { __typename?: 'CategoryEntity', id: string, name: string } | null, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null }> };
+export type GetListAdQuery = { __typename?: 'Query', getListAd: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category: { __typename?: 'CategoryEntity', id: string, name: string }, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null }> };
 
 export type GetAdByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
 }>;
 
 
-export type GetAdByIdQuery = { __typename?: 'Query', getAdById: { __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category?: { __typename?: 'CategoryEntity', id: string, name: string } | null, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null } };
+export type GetAdByIdQuery = { __typename?: 'Query', getAdById: { __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category: { __typename?: 'CategoryEntity', id: string, name: string }, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null } };
 
 export type GetAdBySlugQueryVariables = Exact<{
   slug: Scalars['String']['input'];
 }>;
 
 
-export type GetAdBySlugQuery = { __typename?: 'Query', getAdBySlug: { __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category?: { __typename?: 'CategoryEntity', id: string, name: string } | null, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null } };
+export type GetAdBySlugQuery = { __typename?: 'Query', getAdBySlug: { __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category: { __typename?: 'CategoryEntity', id: string, name: string }, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null } };
 
 export type GetListCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -272,7 +276,7 @@ export type GetCategoryByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryEntity', id: string, name: string, ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null, category?: { __typename?: 'CategoryEntity', id: string, name: string } | null }> } };
+export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryEntity', id: string, name: string, ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null, category: { __typename?: 'CategoryEntity', id: string, name: string } }> } };
 
 export type GetListTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -443,8 +447,9 @@ export type CreateCategoryMutationHookResult = ReturnType<typeof useCreateCatego
 export type CreateCategoryMutationResult = Apollo.MutationResult<CreateCategoryMutation>;
 export type CreateCategoryMutationOptions = Apollo.BaseMutationOptions<CreateCategoryMutation, CreateCategoryMutationVariables>;
 export const PatchCategoryDocument = gql`
-    mutation PatchCategory($infos: CategoryCreateEntity!, $id: String!) {
+    mutation PatchCategory($infos: CategoryUpdateEntity!, $id: String!) {
   patchCategory(infos: $infos, id: $id) {
+    id
     name
   }
 }
@@ -478,9 +483,7 @@ export type PatchCategoryMutationResult = Apollo.MutationResult<PatchCategoryMut
 export type PatchCategoryMutationOptions = Apollo.BaseMutationOptions<PatchCategoryMutation, PatchCategoryMutationVariables>;
 export const DeleteCategoryDocument = gql`
     mutation DeleteCategory($id: String!) {
-  deleteCategory(id: $id) {
-    id
-  }
+  deleteCategory(id: $id)
 }
     `;
 export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMutation, DeleteCategoryMutationVariables>;

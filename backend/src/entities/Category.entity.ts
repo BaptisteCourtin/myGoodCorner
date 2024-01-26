@@ -11,7 +11,7 @@ class CategoryEntity {
   id: number;
 
   @Field()
-  @Column({ unique: true })
+  @Column({ unique: true, length: 15 })
   name: string;
 
   @Field(() => [AdEntity])
@@ -27,7 +27,7 @@ export class CategoryCreateEntity {
 
 @InputType()
 export class CategoryUpdateEntity {
-  @Field({ nullable: true })
+  @Field()
   name: string;
 }
 

@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import axios, { CancelTokenSource } from "axios";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import axiosInstance from "@/lib/axiosInstance";
 import Category from "@/types/Category";
 import ButtonEnregistrer from "@/components/admin/ButtonEnregistrer";
 import Link from "next/link";
+import {
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+  useGetListCategoriesLazyQuery,
+  useGetListCategoriesQuery,
+  usePatchCategoryMutation,
+} from "@/types/graphql";
+import router from "next/router";
 
 const schema = yup.object({
   name: yup.string().required("Attention, le nom de la catégorie est requis"), //name doit être de type string et est requis
 });
 
 const AdminCategories = () => {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-
+  const [reload, setReload] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
-  const [actualId, setActualId] = useState<number>();
-  const [newName, setNewName] = useState<string>("");
 
+  const [actualId, setActualId] = useState<string>("");
+  const [newName, setNewName] = useState<string>("");
   const lengthName = 15;
 
   const {
@@ -33,50 +37,38 @@ const AdminCategories = () => {
   });
 
   // --- get categories ---
-
-  const getCategories = (source: CancelTokenSource) => {
-    axiosInstance
-      .get("categories/list", {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setCategories(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  const [
+    getAdList,
+    { data: dataList, loading: loadingList, error: errorList },
+  ] = useGetListCategoriesLazyQuery({ fetchPolicy: "no-cache" });
 
   useEffect(() => {
-    const source = axios.CancelToken.source();
-    getCategories(source);
-    return () => {
-      source.cancel();
-    };
-  }, []);
+    getAdList({
+      onError(err) {
+        console.error("error", err);
+      },
+    });
+  }, [reload]);
 
   // --- gère l'edit ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // gère le nom
     if (e.target.value.length <= lengthName) {
       setNewName(e.target.value);
     }
   };
 
   function handleEdit(e: React.MouseEvent<HTMLButtonElement>): void {
+    // gère le changement editer/annuler
     const id = e.currentTarget.dataset.id;
     if (id) {
-      if (actualId && +id === actualId) {
+      if (actualId && id === actualId) {
         resetForm(); // sort de l'edit
       } else {
         setEditMode(true);
-        setActualId(+id);
+        setActualId(id);
 
-        let category = categories.find((c) => c.id == +id);
+        let category = dataList?.getListCategories.find((c) => c.id == id);
         if (category) {
           setNewName(category?.name); // auto rempli l'input
         }
@@ -85,35 +77,61 @@ const AdminCategories = () => {
   }
 
   // --- submit ---
-  const onSubmit = () => {
+  const [createCategory, { loading: loadingCreate, error: errorCreate }] =
+    useCreateCategoryMutation();
+
+  const [patchCategory, { loading: loadingPatch, error: errorPatch }] =
+    usePatchCategoryMutation();
+
+  const onSubmit = (data: { name: string }) => {
+    console.log("dataQUIentre", data);
+    console.log(editMode);
     if (editMode) {
-      axiosInstance
-        .patch(`categories/patch/${actualId}`, { name: newName })
-        .then((response) => {
-          setCategories(response.data);
-        })
-        .catch((e) => {
-          setError("name", { message: "Une erreur s'est produite : " + e });
-        });
+      patchCategory({
+        variables: {
+          infos: {
+            name: newName,
+          },
+          id: actualId as string,
+        },
+        onCompleted(data) {
+          console.log("dataQUIsort", data);
+          setReload(!reload);
+        },
+        onError(error) {
+          console.error(error);
+        },
+      });
     } else {
-      axiosInstance
-        .post(`categories/create`, { name: newName })
-        .then((response) => {
-          setCategories(response.data);
-        })
-        .catch((e) => {
-          setError("name", { message: "Une erreur s'est produite : " + e });
-        });
+      createCategory({
+        variables: { infos: { name: data.name } },
+        onCompleted(data) {
+          console.log("dataQUIsort", data);
+          setReload(!reload);
+        },
+        onError(error) {
+          console.error(error);
+        },
+      });
     }
     resetForm();
   };
 
   // --- delete ---
+  const [deleteCategory, { loading: loadingDelete, error: errorDelete }] =
+    useDeleteCategoryMutation();
+
   function handleDelete(e: React.MouseEvent<HTMLButtonElement>): void {
     const id = e.currentTarget.dataset.id;
     if (id) {
-      axiosInstance.delete(`categories/delete/${id}`).then((response) => {
-        setCategories(response.data);
+      deleteCategory({
+        variables: { id: id },
+        onCompleted() {
+          setReload(!reload);
+        },
+        onError(error) {
+          console.error(error);
+        },
       });
     }
   }
@@ -121,7 +139,7 @@ const AdminCategories = () => {
   // --- reset ---
   const resetForm = () => {
     setEditMode(false);
-    setActualId(undefined);
+    setActualId("");
     setNewName("");
   };
 
@@ -139,28 +157,37 @@ const AdminCategories = () => {
           id="name"
           {...register("name")}
           placeholder="votre nom de catégorie"
-          value={newName}
+          value={newName} // pour directement mettre l'ancien nom dans le cas de l'edit
           onChange={(e) => handleChange(e)}
         />
         <p className="length">
           reste : {lengthName - newName.length} / {lengthName}
         </p>
-        <p>{errors?.name?.message}</p>
-        <ButtonEnregistrer />
+
+        {/* <ButtonEnregistrer /> */}
+        <button
+          className="enregistrer"
+          type="submit"
+          disabled={loadingCreate || loadingPatch} // évite de recliquer quand c'est entrain de faire la requête
+        >
+          Enregistrer
+        </button>
       </form>
 
-      {loading ? (
+      {errorList ? (
+        <h2>Une erreur... (déso)</h2>
+      ) : loadingList ? (
         <h2>Chargement en cours</h2>
-      ) : (
+      ) : dataList?.getListCategories.length ? (
         <ul>
-          {categories.map((category) => (
+          {dataList?.getListCategories.map((category) => (
             <li key={category.id}>
               <Link href={`/categories/${category.id}`}>{category.name}</Link>
               <div className="action">
                 <button
                   data-id={category.id}
                   onClick={handleDelete}
-                  disabled={editMode}
+                  disabled={editMode || loadingDelete}
                 >
                   Supprimer (les annonces aussi)
                 </button>
@@ -171,6 +198,8 @@ const AdminCategories = () => {
             </li>
           ))}
         </ul>
+      ) : (
+        <h2>Pas de catégory</h2>
       )}
     </div>
   );
