@@ -8,10 +8,11 @@
   --fs-h4: 1.2rem;
 
   --back: rgb(236, 236, 236);
-  --color: black;
+  --color: rgb(0, 0, 0);
+  --red: rgb(255, 0, 0);
 }
 
 :root .darkTheme {
-  --back: black;
-  --color: white;
+  --back: rgb(0, 0, 0);
+  --color: rgb(255, 255, 255);
 }

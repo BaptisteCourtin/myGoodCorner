@@ -247,10 +247,12 @@ export type DeleteTagMutationVariables = Exact<{
 
 export type DeleteTagMutation = { __typename?: 'Mutation', deleteTag: Array<{ __typename?: 'TagEntity', id: string }> };
 
-export type GetListAdQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetListAdQueryVariables = Exact<{
+  search?: InputMaybe<Scalars['String']['input']>;
+}>;
 
 
-export type GetListAdQuery = { __typename?: 'Query', getListAd: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, category: { __typename?: 'CategoryEntity', id: string, name: string }, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null }> };
+export type GetListAdQuery = { __typename?: 'Query', getListAd: Array<{ __typename?: 'AdEntity', id: string, slug: string, title: string, description: string, owner: string, price: number, picture: string, location: string, createdAt: string, category: { __typename?: 'CategoryEntity', id: string, name: string }, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null }> };
 
 export type GetAdByIdQueryVariables = Exact<{
   id: Scalars['String']['input'];
@@ -276,7 +278,7 @@ export type GetCategoryByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryEntity', id: string, name: string, ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null, category: { __typename?: 'CategoryEntity', id: string, name: string } }> } };
+export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryEntity', id: string, name: string, ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null }> } };
 
 export type GetListTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -614,25 +616,25 @@ export type DeleteTagMutationHookResult = ReturnType<typeof useDeleteTagMutation
 export type DeleteTagMutationResult = Apollo.MutationResult<DeleteTagMutation>;
 export type DeleteTagMutationOptions = Apollo.BaseMutationOptions<DeleteTagMutation, DeleteTagMutationVariables>;
 export const GetListAdDocument = gql`
-    query GetListAd {
-  getListAd {
+    query GetListAd($search: String) {
+  getListAd(search: $search) {
+    id
+    slug
+    title
+    description
+    owner
+    price
+    picture
+    location
+    createdAt
     category {
       id
       name
     }
-    createdAt
-    description
-    id
-    location
-    owner
-    picture
-    price
-    slug
     tags {
-      name
       id
+      name
     }
-    title
   }
 }
     `;
@@ -649,6 +651,7 @@ export const GetListAdDocument = gql`
  * @example
  * const { data, loading, error } = useGetListAdQuery({
  *   variables: {
+ *      search: // value for 'search'
  *   },
  * });
  */
@@ -839,10 +842,6 @@ export const GetCategoryByIdDocument = gql`
         name
       }
       title
-      category {
-        id
-        name
-      }
     }
   }
 }

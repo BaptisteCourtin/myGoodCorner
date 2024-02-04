@@ -1,14 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
-import axios, { CancelTokenSource } from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import axiosInstance from "@/lib/axiosInstance";
-import Category from "@/types/Category";
+import {
+  useCreateAdMutation,
+  useGetListCategoriesQuery,
+} from "@/types/graphql";
+
 import ButtonEnregistrer from "@/components/admin/ButtonEnregistrer";
-import Link from "next/link";
 
 const schema = yup.object({
   title: yup.string().required("Attention, le titre de l'annonce est requis"),
@@ -16,66 +19,65 @@ const schema = yup.object({
   owner: yup
     .string()
     .required("Attention, le propriétaire de l'annonce est requis"),
-  price: yup.string().required("Attention, le prix de l'annonce est requis"),
-  picture: yup.string(),
-  location: yup
+  price: yup
+    .number()
+    .positive()
+    .required("Attention, le prix de l'annonce est requis"),
+  picture: yup
     .string()
-    .required("Attention, l'adresse de l'annonce est requis"),
-  category: yup.number(),
+    .url()
+    .required("Attention, une image du produit est requise"),
+  location: yup.string().required("Attention, l'adresse est requis"),
+  category: yup.object({
+    id: yup.number().required("Attention, une catégorie est requise"),
+  }),
 });
+
+type FormType = {
+  title: string;
+  // description: string;
+  owner: string;
+  price: number;
+  picture: string;
+  location: string;
+  category: { id: number };
+};
 
 const createAds = ({ ad }: any) => {
   const router = useRouter();
+  const [createAd, { loading: loadingAd, error: errorCreate }] =
+    useCreateAdMutation();
+
   const {
     register,
     handleSubmit,
+    reset,
     setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
   });
 
-  // ---
+  // --- get categories ---
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCatgeories,
+  } = useGetListCategoriesQuery({});
 
-  const getCategories = (source: CancelTokenSource) => {
-    axiosInstance
-      .get("categories/list", {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // --- submit ---
 
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    getCategories(source);
-    return () => {
-      source.cancel();
-    };
-  }, []);
-
-  // ---
-
-  const onSubmit = (data: any) => {
-    axiosInstance
-      .post(`/ads/create`, data)
-      .then(() => {
-        router.push("/ads");
-        console.log("C'est bon pour nous");
-      })
-      .catch((e) => {
-        setError(data, { message: "C'est pas bon pour nous : " + e });
-      });
+  const onSubmit = (data: FormType) => {
+    createAd({
+      variables: { infos: data },
+      onCompleted() {
+        router.push(`/ads`);
+      },
+      onError(error) {
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -93,7 +95,7 @@ const createAds = ({ ad }: any) => {
           {...register("title")}
           placeholder="votre titre d'annonce"
         />
-        <p>{errors?.title?.message}</p>
+        <p className="error">{errors?.title?.message}</p>
 
         <label htmlFor="description">Description :</label>
         <textarea
@@ -101,7 +103,7 @@ const createAds = ({ ad }: any) => {
           {...register("description")}
           placeholder="votre description d'annonce"
         />
-        <p>{errors?.description?.message}</p>
+        <p className="error">{errors?.description?.message}</p>
 
         <label htmlFor="owner">Propriétaire : </label>
         <input
@@ -110,7 +112,7 @@ const createAds = ({ ad }: any) => {
           {...register("owner")}
           placeholder="vous"
         />
-        <p>{errors?.owner?.message}</p>
+        <p className="error">{errors?.owner?.message}</p>
 
         <label htmlFor="price">Prix :</label>
         <input
@@ -119,7 +121,7 @@ const createAds = ({ ad }: any) => {
           {...register("price")}
           placeholder="votre prix"
         />
-        <p>{errors?.price?.message}</p>
+        <p className="error">{errors?.price?.message}</p>
 
         <label htmlFor="picture">Image :</label>
         <input
@@ -128,7 +130,7 @@ const createAds = ({ ad }: any) => {
           {...register("picture")}
           placeholder="votre image"
         />
-        <p>{errors?.picture?.message}</p>
+        <p className="error">{errors?.picture?.message}</p>
 
         <label htmlFor="location">Ville :</label>
         <input
@@ -137,14 +139,14 @@ const createAds = ({ ad }: any) => {
           {...register("location")}
           placeholder="votre ville"
         />
-        <p>{errors?.location?.message}</p>
+        <p className="error">{errors?.location?.message}</p>
 
         <label htmlFor="category">Categorie :</label>
-        <select id="category" {...register("category")} defaultValue={""}>
+        <select id="category" {...register("category.id")} defaultValue={""}>
           <option value="" disabled>
             Selectionnez votre categorie
           </option>
-          {categories.map((category) => (
+          {dataCategories?.getListCategories.map((category) => (
             <option value={category.id} key={category.id}>
               {category.name}
             </option>

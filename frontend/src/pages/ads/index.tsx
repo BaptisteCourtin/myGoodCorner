@@ -10,7 +10,9 @@ const index = () => {
   const [tri, setTri] = useState<string>("Date Décroissante");
 
   // avec ce qui a été généré dans graphql.ts
-  const { data, loading, error } = useGetListAdQuery({});
+  const { data, loading, error } = useGetListAdQuery({
+    fetchPolicy: "no-cache",
+  });
 
   return (
     <main className="adsList">
@@ -41,7 +43,7 @@ const index = () => {
       ) : data?.getListAd.length ? (
         <ul className="cardsAdUl">
           {data?.getListAd
-            .slice()
+            .slice() // car graphql nous renvoie un tableau en lecture seule
             .sort(function compare(a: any, b: any) {
               if (tri === "Date Décroissante") {
                 if (a.id < b.id) return 1;

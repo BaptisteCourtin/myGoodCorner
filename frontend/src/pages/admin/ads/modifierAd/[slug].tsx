@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import axios, { CancelTokenSource } from "axios";
+import React, { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
+import Link from "next/link";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import axiosInstance from "@/lib/axiosInstance";
-import Category from "@/types/Category";
 import ButtonEnregistrer from "@/components/admin/ButtonEnregistrer";
-import Ad from "@/types/Ad";
-import Link from "next/link";
+import {
+  useGetAdBySlugLazyQuery,
+  useGetListCategoriesQuery,
+  usePatchAdMutation,
+} from "@/types/graphql";
 
 const schema = yup.object({
   title: yup.string().required("Attention, le titre de l'annonce est requis"),
@@ -17,54 +19,32 @@ const schema = yup.object({
   owner: yup
     .string()
     .required("Attention, le propriétaire de l'annonce est requis"),
-  price: yup.string().required("Attention, le prix de l'annonce est requis"),
-  picture: yup.string(),
-  location: yup
+  price: yup
+    .number()
+    .positive()
+    .required("Attention, le prix de l'annonce est requis"),
+  picture: yup
     .string()
-    .required("Attention, l'adresse de l'annonce est requis"),
-  category: yup.number(),
+    .url()
+    .required("Attention, une image du produit est requise"),
+  location: yup.string().required("Attention, l'adresse est requis"),
+  category: yup.object({
+    id: yup.number().required("Attention, une catégorie est requise"),
+  }),
 });
+
+type FormType = {
+  title: string;
+  owner: string;
+  price: number;
+  picture: string;
+  location: string;
+  category: { id: number };
+};
 
 const modifierAd = () => {
   const router = useRouter();
   const { slug } = router.query;
-
-  const [ad, setAd] = useState<Partial<Ad>>();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [messageError, setMessageError] = useState<Error>();
-
-  // --- get ad ---
-  const getAd = (source: CancelTokenSource) => {
-    axiosInstance
-      .get(`ads/findBySlug/${slug}`, {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setAd(response.data);
-        if (response.data.title == undefined) {
-          setMessageError(response.data);
-        }
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
-
-  useEffect(() => {
-    const source = axios.CancelToken.source();
-    if (router.isReady) {
-      getAd(source);
-    }
-    return () => {
-      source.cancel();
-    };
-  }, [router.isReady]);
-
-  // ---
 
   const {
     register,
@@ -75,61 +55,52 @@ const modifierAd = () => {
     resolver: yupResolver(schema),
   });
 
-  // --- get categories ---
-
-  const getCategories = (source: CancelTokenSource) => {
-    axiosInstance
-      .get("categories/list", {
-        cancelToken: source.token,
-      })
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
-  };
+  // --- get ad ---
+  const [getAdBySlug, { data: dataAd, loading: loadingAd, error: errorAd }] =
+    useGetAdBySlugLazyQuery();
 
   useEffect(() => {
-    const source = axios.CancelToken.source();
-    getCategories(source);
-    return () => {
-      source.cancel();
-    };
-  }, []);
-
-  // ---
-
-  const onSubmit = () => {
-    axiosInstance
-      .patch(`ads/patch/${ad?.id}`, ad)
-      .then(() => {
-        router.push("/ads");
-        console.log("C'est bon pour nous");
-      })
-      .catch(() => {
-        console.error("C'est pas bon pour nous : ");
+    if (router.isReady) {
+      getAdBySlug({
+        variables: { slug: slug as string },
+        onError(err) {
+          console.error("error", err);
+        },
       });
-  };
+    }
+  }, [router.isReady]);
 
-  const handleChange = (e: any) => {
-    const { name } = e.target;
-    setAd((prevState) => ({
-      ...prevState,
-      [name]: e.target.value,
-    }));
+  // --- get categories ---
+
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCatgeories,
+  } = useGetListCategoriesQuery({});
+
+  // --- submit ---
+
+  const [patchAd, { loading: loadingPatch, error: errorPatch }] =
+    usePatchAdMutation();
+
+  const onSubmit = (data: FormType) => {
+    patchAd({
+      variables: { id: dataAd?.getAdBySlug.id as string, infos: data },
+      onCompleted() {
+        router.push(`/ads`);
+      },
+      onError(error) {
+        console.error(error);
+      },
+    });
   };
 
   return (
     <div className="adminModifierAd">
-      {ad == undefined ? (
-        <h1>Chargement en cours</h1>
-      ) : messageError !== undefined ? (
-        <h1>{messageError.message}</h1>
+      {errorAd ? (
+        <h2>Une erreur... (déso)</h2>
+      ) : loadingAd ? (
+        <h2>Chargement en cours</h2>
       ) : (
         <>
           <Link href={"/ads"} className="retourTopButton">
@@ -144,19 +115,18 @@ const modifierAd = () => {
               type="text"
               {...register("title")}
               placeholder="votre titre d'annonce"
-              value={ad.title}
-              onChange={(e) => handleChange(e)}
+              value={dataAd?.getAdBySlug.title}
             />
-            <p>{errors?.title?.message}</p>
+            <p className="error">{errors?.title?.message}</p>
 
             <label htmlFor="description">Description :</label>
             <textarea
               id="description"
               {...register("description")}
               placeholder="votre description d'annonce"
-              value={ad.description}
+              value={dataAd?.getAdBySlug.description}
             />
-            <p>{errors?.description?.message}</p>
+            <p className="error">{errors?.description?.message}</p>
 
             <label htmlFor="owner">Propriétaire : </label>
             <input
@@ -164,9 +134,9 @@ const modifierAd = () => {
               type="text"
               {...register("owner")}
               placeholder="vous"
-              value={ad.owner}
+              value={dataAd?.getAdBySlug.owner}
             />
-            <p>{errors?.owner?.message}</p>
+            <p className="error">{errors?.owner?.message}</p>
 
             <label htmlFor="price">Prix :</label>
             <input
@@ -174,9 +144,9 @@ const modifierAd = () => {
               type="number"
               {...register("price")}
               placeholder="votre prix"
-              value={ad.price}
+              value={dataAd?.getAdBySlug.price}
             />
-            <p>{errors?.price?.message}</p>
+            <p className="error">{errors?.price?.message}</p>
 
             <label htmlFor="picture">Image :</label>
             <input
@@ -184,9 +154,9 @@ const modifierAd = () => {
               type="text"
               {...register("picture")}
               placeholder="votre image"
-              value={ad.picture}
+              value={dataAd?.getAdBySlug.picture}
             />
-            <p>{errors?.picture?.message}</p>
+            <p className="error">{errors?.picture?.message}</p>
 
             <label htmlFor="location">Ville :</label>
             <input
@@ -194,22 +164,22 @@ const modifierAd = () => {
               type="text"
               {...register("location")}
               placeholder="votre ville"
-              value={ad.location}
+              value={dataAd?.getAdBySlug.location}
             />
-            <p>{errors?.location?.message}</p>
+            <p className="error">{errors?.location?.message}</p>
 
             <label htmlFor="category">Categorie :</label>
             <select id="category" {...register("category")} defaultValue={""}>
               <option value="" disabled>
                 Selectionnez votre categorie
               </option>
-              {categories.map((category) => (
+              {dataCategories?.getListCategories.map((category) => (
                 <option value={category.id} key={category.id}>
                   {category.name}
                 </option>
               ))}
             </select>
-            <p>{errors?.category?.message}</p>
+            <p className="error">{errors?.category?.message}</p>
 
             <ButtonEnregistrer />
           </form>

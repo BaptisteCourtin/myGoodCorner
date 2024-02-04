@@ -12,7 +12,9 @@ const AdSlug = () => {
   const router = useRouter();
   const { slug } = router.query;
 
-  const [getAdBySlug, { data, loading, error }] = useGetAdBySlugLazyQuery();
+  const [getAdBySlug, { data, loading, error }] = useGetAdBySlugLazyQuery({
+    fetchPolicy: "no-cache",
+  });
 
   useEffect(() => {
     if (router.isReady) {
@@ -38,14 +40,14 @@ const AdSlug = () => {
           </Link>
 
           <SupprimerAd id={data.getAdBySlug?.id} />
-          {/* <div className="container-modifier">
+          <div className="container-modifier">
             <Link
-              href={`/admin/ads/modifierAd/${ad.slug}`}
+              href={`/admin/ads/modifierAd/${data.getAdBySlug.slug}`}
               className="modifierCeci"
             >
               <p>Modifier l'annonce</p>
             </Link>
-          </div> */}
+          </div>
 
           <main>
             <div className="container-info">

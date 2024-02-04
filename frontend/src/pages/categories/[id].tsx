@@ -13,6 +13,7 @@ import { GET_CATEGORY_BY_ID } from "@/requetes/queries/categories.queries";
 import {
   AdEntity,
   GetAdByIdQuery,
+  GetCategoryByIdQuery,
   useGetCategoryByIdLazyQuery,
   useGetCategoryByIdQuery,
 } from "@/types/graphql";
@@ -91,8 +92,8 @@ const CategoryId = () => {
 
             <ul className="cardsAdUl">
               {data?.getCategoryById.ads.map(
-                (ad: GetAdByIdQuery["getAdById"]) => (
-                  <CardAd ad={ad} key={ad.id} />
+                (ad: GetCategoryByIdQuery["getCategoryById"]["ads"][0]) => (
+                  <CardAd ad={ad} key={ad.id} /> // osef
                 )
               )}
             </ul>

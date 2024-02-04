@@ -1,41 +1,30 @@
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent } from "react";
+import Link from "next/link";
 
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 
-import Ad from "@/types/Ad";
-import axiosInstance from "@/lib/axiosInstance";
-import Link from "next/link";
+import { useGetListAdLazyQuery } from "@/types/graphql";
 
 const SearchBar = () => {
-  const [ads, setAds] = useState<Ad[]>([]);
+  const [getListAds, { data, loading }] = useGetListAdLazyQuery();
 
   const handleSearch = (e: SyntheticEvent<Element, Event>, value: string) => {
-    axiosInstance
-      .get<Ad[]>(`ads/list?search=${value}`)
-      .then((response) => {
-        setAds(response.data);
-      })
-      .catch((err) => {
-        if (err.code === "ERR_CANCELED") {
-          console.warn("cancel request");
-        } else {
-          console.error(err);
-        }
-      });
+    getListAds({ variables: { search: value as string } });
   };
 
   return (
     <Autocomplete
       className="searchBar"
-      options={ads}
+      loading={loading}
+      options={data?.getListAd ?? []}
       groupBy={(option) => option.category.name}
       getOptionLabel={(option) => option.title}
       sx={{ width: 300 }}
       renderInput={(params) => <TextField {...params} label="Recherche" />}
       onInputChange={handleSearch}
       renderOption={(props, option, state) => (
-        <li {...props}>
+        <li {...props} key={option.id}>
           <Link href={`/ads/${option.slug}`}>
             <p style={{ paddingLeft: "2rem" }} key={state.index}>
               {option.title}

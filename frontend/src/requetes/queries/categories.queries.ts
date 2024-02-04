@@ -28,10 +28,6 @@ export const GET_CATEGORY_BY_ID = gql`
           name
         }
         title
-        category {
-          id
-          name
-        }
       }
     }
   }

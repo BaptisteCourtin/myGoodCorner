@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
+import Link from "next/link";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import Category from "@/types/Category";
-import ButtonEnregistrer from "@/components/admin/ButtonEnregistrer";
-import Link from "next/link";
 import {
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
   useGetListCategoriesLazyQuery,
-  useGetListCategoriesQuery,
   usePatchCategoryMutation,
 } from "@/types/graphql";
-import router from "next/router";
-
-const schema = yup.object({
-  name: yup.string().required("Attention, le nom de la catégorie est requis"), //name doit être de type string et est requis
-});
 
 const AdminCategories = () => {
+  const maxLengthName = 15;
+  const minLengthName = 3;
   const [reload, setReload] = useState<boolean>(false);
   const [editMode, setEditMode] = useState<boolean>(false);
 
   const [actualId, setActualId] = useState<string>("");
   const [newName, setNewName] = useState<string>("");
-  const lengthName = 15;
+
+  const schema = yup.object({
+    name: yup
+      .string()
+      .min(minLengthName)
+      .max(maxLengthName)
+      .required("Attention, le nom de la catégorie est requis"), //name doit être de type string (max 15 & min 3) et est requis
+  });
 
   const {
     register,
@@ -53,7 +55,7 @@ const AdminCategories = () => {
   // --- gère l'edit ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // gère le nom
-    if (e.target.value.length <= lengthName) {
+    if (e.target.value.length <= maxLengthName) {
       setNewName(e.target.value);
     }
   };
@@ -95,7 +97,6 @@ const AdminCategories = () => {
           id: actualId as string,
         },
         onCompleted(data) {
-          console.log("dataQUIsort", data);
           setReload(!reload);
         },
         onError(error) {
@@ -106,7 +107,6 @@ const AdminCategories = () => {
       createCategory({
         variables: { infos: { name: data.name } },
         onCompleted(data) {
-          console.log("dataQUIsort", data);
           setReload(!reload);
         },
         onError(error) {
@@ -161,7 +161,7 @@ const AdminCategories = () => {
           onChange={(e) => handleChange(e)}
         />
         <p className="length">
-          reste : {lengthName - newName.length} / {lengthName}
+          reste : {maxLengthName - newName.length} / {maxLengthName}
         </p>
 
         {/* <ButtonEnregistrer /> */}
@@ -199,7 +199,7 @@ const AdminCategories = () => {
           ))}
         </ul>
       ) : (
-        <h2>Pas de catégory</h2>
+        <h2>Pas de catégorie</h2>
       )}
     </div>
   );
