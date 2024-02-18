@@ -56,19 +56,61 @@ import AdResolver from "./resolvers/Ad.resolver";
 import CategoryResolver from "./resolvers/Category.resolver";
 import TagResolver from "./resolvers/Tag.resolver";
 
+// async function main() {
+//   const schema = await buildSchema({
+//     resolvers: [AdResolver, CategoryResolver, TagResolver],
+//   });
+//   const server = new ApolloServer<{}>({
+//     schema,
+//   });
+
+//   await datasource.initialize();
+//   const { url } = await startStandaloneServer(server, {
+//     listen: { port: port },
+//   });
+
+//   console.log(`🚀  Server ready at: ${url}`);
+// }
+// main();
+
+// --- avec les cors et docker ---
+
+import { expressMiddleware } from "@apollo/server/express4";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+
+import express from "express";
+import http from "http";
+import cors from "cors";
+import "reflect-metadata";
+
+const app = express();
+const httpServer = http.createServer(app);
+
 async function main() {
   const schema = await buildSchema({
     resolvers: [AdResolver, CategoryResolver, TagResolver],
+    validate: false,
   });
   const server = new ApolloServer<{}>({
     schema,
+    plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
 
+  await server.start();
+  app.use(
+    "/",
+    cors<cors.CorsRequest>({
+      origin: ["http://localhost:3000", "https://studio.apollographql.com"],
+      credentials: true,
+    }),
+    express.json(),
+    expressMiddleware(server)
+  );
   await datasource.initialize();
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: port },
-  });
-
-  console.log(`🚀  Server ready at: ${url}`);
+  await new Promise<void>((resolve) =>
+    httpServer.listen({ port: 4000 }, resolve)
+  );
+  console.log(`🚀 Server lancé sur http://localhost:4000/`);
 }
+
 main();

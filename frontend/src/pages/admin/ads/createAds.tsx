@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Link from "next/link";
+
+import Image from "next/image";
+import axios from "axios";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,10 +26,11 @@ const schema = yup.object({
     .number()
     .positive()
     .required("Attention, le prix de l'annonce est requis"),
-  picture: yup
-    .string()
-    .url()
-    .required("Attention, une image du produit est requise"),
+  // picture: yup
+  //   .string()
+  //   .url()
+  //   .required("Attention, une image du produit est requise"),
+  picture: yup.mixed<FileList>().required("Votre image est requise"),
   location: yup.string().required("Attention, l'adresse est requis"),
   category: yup.object({
     id: yup.number().required("Attention, une catégorie est requise"),
@@ -38,7 +42,8 @@ type FormType = {
   // description: string;
   owner: string;
   price: number;
-  picture: string;
+  // picture: string;
+  picture: FileList;
   location: string;
   category: { id: number };
 };
@@ -47,6 +52,8 @@ const createAds = ({ ad }: any) => {
   const router = useRouter();
   const [createAd, { loading: loadingAd, error: errorCreate }] =
     useCreateAdMutation();
+
+  const [preview, setPreview] = useState<string>("");
 
   const {
     register,
@@ -68,16 +75,38 @@ const createAds = ({ ad }: any) => {
 
   // --- submit ---
 
-  const onSubmit = (data: FormType) => {
-    createAd({
-      variables: { infos: data },
-      onCompleted() {
-        router.push(`/ads`);
-      },
-      onError(error) {
-        console.error(error);
-      },
-    });
+  // const onSubmit = (data: FormType) => {
+  //   createAd({
+  //     variables: { infos: data },
+  //     onCompleted() {
+  //       router.push(`/ads`);
+  //     },
+  //     onError(error) {
+  //       console.error(error);
+  //     },
+  //   });
+  // };
+
+  const onSubmit = ({ picture, ...data }: FormType) => {
+    if (picture.length) {
+      const formData = new FormData();
+      formData.append("file", picture[0], picture[0].name);
+      axios
+        .post("http://localhost:3002/upload", formData)
+        .then((result) => {
+          console.log(result);
+          createAd({
+            variables: { infos: { ...data, picture: result.data.filename } },
+            onCompleted(data) {
+              router.push(`/ads`);
+            },
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+    // !penser à gérer les erreurs (setError);
   };
 
   return (
@@ -123,14 +152,33 @@ const createAds = ({ ad }: any) => {
         />
         <p className="error">{errors?.price?.message}</p>
 
-        <label htmlFor="picture">Image :</label>
+        {/* <label htmlFor="picture">Image :</label>
         <input
           id="picture"
           type="text"
           {...register("picture")}
           placeholder="votre image"
         />
-        <p className="error">{errors?.picture?.message}</p>
+        <p className="error">{errors?.picture?.message}</p> */}
+
+        <label htmlFor="picture">Image :</label>
+        <input
+          type="file"
+          accept="image/*"
+          {...register("picture", {
+            onChange(e) {
+              console.log("URL", URL.createObjectURL(e.target.files[0]));
+              setPreview(URL.createObjectURL(e.target.files[0]));
+            },
+          })}
+          placeholder="Photo"
+        />
+        <p>{errors?.picture?.message}</p>
+        {preview && (
+          <div>
+            <Image src={preview} alt="preview" width={50} height={50} />
+          </div>
+        )}
 
         <label htmlFor="location">Ville :</label>
         <input

@@ -52,9 +52,13 @@ const AdSlug = () => {
           <main>
             <div className="container-info">
               <h1>{data.getAdBySlug.title}</h1>
-              <img
+              {/* <img
                 src={data.getAdBySlug.picture}
                 alt={"image of " + data.getAdBySlug.title}
+              /> */}
+              <img
+                src={`http://localhost:3002${data?.getAdBySlug.picture}`}
+                alt={data?.getAdBySlug.title}
               />
               <div className="desc desc1">
                 <div className="row">

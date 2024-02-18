@@ -1,10 +1,10 @@
 # page admin ads => modifier
 
-# limiter taille des input
+# limiter taille des input (ad)
 
-# page 404
+# les tags dans id category
 
-# erreur en rouge
+# des requêtes moins lourds quand y'a pas besoin de plus (searchBar)
 
 <!-- BACK -->
 

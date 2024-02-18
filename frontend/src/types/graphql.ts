@@ -711,7 +711,7 @@ export const GetAdByIdDocument = gql`
  *   },
  * });
  */
-export function useGetAdByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAdByIdQuery, GetAdByIdQueryVariables>) {
+export function useGetAdByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAdByIdQuery, GetAdByIdQueryVariables> & ({ variables: GetAdByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAdByIdQuery, GetAdByIdQueryVariables>(GetAdByIdDocument, options);
       }
@@ -767,7 +767,7 @@ export const GetAdBySlugDocument = gql`
  *   },
  * });
  */
-export function useGetAdBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetAdBySlugQuery, GetAdBySlugQueryVariables>) {
+export function useGetAdBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetAdBySlugQuery, GetAdBySlugQueryVariables> & ({ variables: GetAdBySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAdBySlugQuery, GetAdBySlugQueryVariables>(GetAdBySlugDocument, options);
       }
@@ -863,7 +863,7 @@ export const GetCategoryByIdDocument = gql`
  *   },
  * });
  */
-export function useGetCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>) {
+export function useGetCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables> & ({ variables: GetCategoryByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>(GetCategoryByIdDocument, options);
       }
@@ -944,7 +944,7 @@ export const GetTagByIdDocument = gql`
  *   },
  * });
  */
-export function useGetTagByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTagByIdQuery, GetTagByIdQueryVariables>) {
+export function useGetTagByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTagByIdQuery, GetTagByIdQueryVariables> & ({ variables: GetTagByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetTagByIdQuery, GetTagByIdQueryVariables>(GetTagByIdDocument, options);
       }

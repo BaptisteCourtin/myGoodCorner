@@ -11,7 +11,8 @@ const CardAd = ({ ad }: { ad: GetAdByIdQuery["getAdById"] }) => {
   return (
     <Link href={`/ads/${ad.slug}`}>
       <li className="cardAd">
-        <img src={ad.picture} alt={"image of " + ad.title} />
+        {/* <img src={ad.picture} alt={"image of " + ad.title} /> */}
+        <img src={`http://localhost:3002${ad.picture}`} alt={ad.title} />
         <div className="desc desc1">
           <div className="row">
             <h2>{ad.title}</h2>
