@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   images: {
     domains: [
+      "localhost",
       "picsum.photos",
       "loremflickr.com",
       "www.adobe.com",

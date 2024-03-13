@@ -1,6 +1,6 @@
-import "reflect-metadata";
-const port = 4000;
-import datasource from "./lib/datasource";
+// import "reflect-metadata";
+// import datasource from "./lib/datasource";
+// const port = 4000;
 
 // ----- EXPRESS -----
 // import express from "express";
@@ -29,8 +29,8 @@ import datasource from "./lib/datasource";
 // });
 
 // ----- GraphQL -----
-import { ApolloServer } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+// import { ApolloServer } from "@apollo/server";
+// import { startStandaloneServer } from "@apollo/server/standalone";
 // import typeDefs from "./typedefs";
 // import resolvers from "./resolvers";
 
@@ -50,11 +50,11 @@ import { startStandaloneServer } from "@apollo/server/standalone";
 // main();
 
 // ----- TypeGraphQL -----
-import { buildSchema } from "type-graphql";
+// import { buildSchema } from "type-graphql";
 
-import AdResolver from "./resolvers/Ad.resolver";
-import CategoryResolver from "./resolvers/Category.resolver";
-import TagResolver from "./resolvers/Tag.resolver";
+// import AdResolver from "./resolvers/Ad.resolver";
+// import CategoryResolver from "./resolvers/Category.resolver";
+// import TagResolver from "./resolvers/Tag.resolver";
 
 // async function main() {
 //   const schema = await buildSchema({
@@ -74,14 +74,22 @@ import TagResolver from "./resolvers/Tag.resolver";
 // main();
 
 // --- avec les cors et docker ---
+import "reflect-metadata";
+import datasource from "./lib/datasource";
 
+import AdResolver from "./resolvers/Ad.resolver";
+import CategoryResolver from "./resolvers/Category.resolver";
+import TagResolver from "./resolvers/Tag.resolver";
+
+import { buildSchema } from "type-graphql";
+
+import { ApolloServer } from "@apollo/server";
 import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 
 import express from "express";
 import http from "http";
 import cors from "cors";
-import "reflect-metadata";
 
 const app = express();
 const httpServer = http.createServer(app);
