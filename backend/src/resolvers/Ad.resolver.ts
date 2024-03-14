@@ -1,10 +1,11 @@
-import { Arg, Mutation, Query } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import AdEntity, {
   AdCreateEntity,
   AdUpdateEntity,
 } from "../entities/Ad.entity";
 import AdsService from "../services/ads.service";
 
+@Resolver()
 export default class AdResolver {
   @Query(() => [AdEntity])
   async getListAd(@Arg("search", { nullable: true }) search: string) {

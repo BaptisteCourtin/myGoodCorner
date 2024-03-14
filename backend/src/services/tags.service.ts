@@ -8,14 +8,14 @@ import TagEntity, {
 import datasource from "../lib/datasource";
 
 class TagsService {
-  dbORM: Repository<TagEntity>;
+  db: Repository<TagEntity>;
 
   constructor() {
-    this.dbORM = datasource.getRepository(TagEntity);
+    this.db = datasource.getRepository(TagEntity);
   }
 
   async list(tagIds?: string[]) {
-    const result = await this.dbORM.find({
+    const result = await this.db.find({
       where: {
         id: tagIds && tagIds.length > 0 ? In(tagIds.map((t) => +t)) : undefined,
       },
@@ -28,7 +28,7 @@ class TagsService {
   }
 
   async find(id: number) {
-    const result = await this.dbORM.findOne({
+    const result = await this.db.findOne({
       where: { id },
     });
 
@@ -41,8 +41,8 @@ class TagsService {
   // ---
 
   async create(data: TagCreateEntity) {
-    const newTag = this.dbORM.create(data);
-    await this.dbORM.save(newTag);
+    const newTag = this.db.create(data);
+    await this.db.save(newTag);
     return await this.list();
   }
 
@@ -50,15 +50,15 @@ class TagsService {
 
   async patch(id: number, data: Partial<TagEntity>) {
     const tag = await this.find(id);
-    const tagMerge = this.dbORM.merge(tag, data); // petite info, le merge permet d'ignorer les clés qui n'existent pas dans l'entité! vous voyez l'intéret d'un ORM? Tout est lié
-    return await this.dbORM.save(tagMerge);
+    const tagMerge = this.db.merge(tag, data); // petite info, le merge permet d'ignorer les clés qui n'existent pas dans l'entité! vous voyez l'intéret d'un ORM? Tout est lié
+    return await this.db.save(tagMerge);
   }
 
   // ---
 
   async delete(id: number) {
     const tag = await this.find(id);
-    await this.dbORM.remove(tag);
+    await this.db.remove(tag);
     return await this.list();
   }
 }

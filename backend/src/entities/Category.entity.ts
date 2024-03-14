@@ -19,6 +19,18 @@ class CategoryEntity {
   ads: AdEntity[];
 }
 
+@ObjectType()
+export class CategoryWithAdsCounted {
+  @Field(() => CategoryEntity)
+  category: CategoryEntity;
+
+  @Field(() => [AdEntity])
+  ads: AdEntity[];
+
+  @Field()
+  count: number;
+}
+
 @InputType()
 export class CategoryCreateEntity {
   @Field()

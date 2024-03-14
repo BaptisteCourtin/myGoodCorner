@@ -1,10 +1,12 @@
-import { Arg, Mutation, Query } from "type-graphql";
+import { Arg, Mutation, Query, Resolver } from "type-graphql";
 import CategoryEntity, {
   CategoryCreateEntity,
   CategoryUpdateEntity,
+  CategoryWithAdsCounted,
 } from "../entities/Category.entity";
 import CategoriesService from "../services/categories.service";
 
+@Resolver()
 export default class CategoryResolver {
   @Query(() => [CategoryEntity])
   async getListCategories() {
@@ -12,10 +14,18 @@ export default class CategoryResolver {
     return result;
   }
 
-  @Query(() => CategoryEntity)
-  async getCategoryById(@Arg("id") id: string) {
-    const result: CategoryEntity = await new CategoriesService().find(+id);
-    return result;
+  @Query(() => CategoryWithAdsCounted)
+  async findCategory(
+    @Arg("id") id: string,
+    @Arg("limit", { nullable: true }) limit?: number,
+    @Arg("skip", { nullable: true }) skip?: number
+  ) {
+    const categoryWithAdsAndCounter = await new CategoriesService().find(
+      +id,
+      limit,
+      skip
+    );
+    return categoryWithAdsAndCounter;
   }
 
   // ---
@@ -40,10 +50,12 @@ export default class CategoryResolver {
     return result;
   }
 
-  @Mutation(() => String)
+  @Mutation(() => [CategoryEntity])
   async deleteCategory(@Arg("id") id: string) {
-    const result = await new CategoriesService().delete(+id);
-    return result;
+    const categories: CategoryEntity[] = await new CategoriesService().delete(
+      +id
+    );
+    return categories;
   }
 }
 

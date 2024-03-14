@@ -103,7 +103,6 @@ async function main() {
     schema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
-
   await server.start();
   app.use(
     "/",
@@ -114,7 +113,9 @@ async function main() {
     express.json(),
     expressMiddleware(server)
   );
-  await datasource.initialize();
+
+  await datasource.initialize(); // .env ?
+
   await new Promise<void>((resolve) =>
     httpServer.listen({ port: 4000 }, resolve)
   );

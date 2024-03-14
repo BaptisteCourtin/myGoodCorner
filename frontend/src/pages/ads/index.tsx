@@ -18,7 +18,7 @@ const index = () => {
     <main className="adsList">
       <h1>ADS LIST</h1>
 
-      <Link href={"/admin/ads/createAds"} className="linkAdmin">
+      <Link href={"/ads/createAds"} className="linkAdmin">
         Créer une annonce →
       </Link>
 

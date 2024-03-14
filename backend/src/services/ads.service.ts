@@ -1,4 +1,5 @@
 import { Like, Repository } from "typeorm";
+import datasource from "../lib/datasource";
 
 import AdEntity, {
   AdCreateEntity,
@@ -7,19 +8,20 @@ import AdEntity, {
 import TagEntity from "../entities/Tag.entity";
 import CategoryEntity from "../entities/Category.entity";
 
-import datasource from "../lib/datasource";
 import CategoriesService from "./categories.service";
 import TagsService from "./tags.service";
 
 class AdsService {
-  dbORM: Repository<AdEntity>;
+  db: Repository<AdEntity>;
+  dbTag: Repository<TagEntity>;
 
   constructor() {
-    this.dbORM = datasource.getRepository(AdEntity);
+    this.db = datasource.getRepository(AdEntity);
+    this.dbTag = datasource.getRepository(TagEntity);
   }
 
   async list(search?: string) {
-    const result = await this.dbORM.find({
+    const result = await this.db.find({
       relations: { category: true, tags: true }, //permet de récupérer la jointure faite entre ad et category et entre ad et tags
       where: search
         ? [
@@ -37,7 +39,7 @@ class AdsService {
   }
 
   async find(id: number) {
-    const result = await this.dbORM.findOne({
+    const result = await this.db.findOne({
       where: {
         id: id,
       },
@@ -54,7 +56,7 @@ class AdsService {
   }
 
   async findBySlug(slug: string) {
-    const result = await this.dbORM.findOne({
+    const result = await this.db.findOne({
       where: {
         slug: slug,
       },
@@ -73,24 +75,25 @@ class AdsService {
   // ---
 
   async create(data: AdCreateEntity) {
-    const category: CategoryEntity = await new CategoriesService().find(
-      +data.category.id
-    );
+    // const category: CategoryEntity = await new CategoriesService().find(
+    //   +data.category.id
+    // );
+    const { category } = await new CategoriesService().find(+data.category.id);
 
     let tags: TagEntity[] = [];
     if (data.tags?.length) {
       tags = await new TagsService().list(data.tags);
     }
 
-    const newAd = this.dbORM.create({ ...data, category, tags }); //newAd attend une categorie. Si la catégorie n'est pas trouvée, le find juste au dessus lèvera une erreur, sinon nous arriverons ici
-    return await this.dbORM.save(newAd);
+    const newAd = this.db.create({ ...data, category, tags }); //newAd attend une categorie. Si la catégorie n'est pas trouvée, le find juste au dessus lèvera une erreur, sinon nous arriverons ici
+    return await this.db.save(newAd);
   }
 
   // ---
 
   async patch(id: number, { tags, ...data }: Partial<AdCreateEntity>) {
     const ad = await this.find(id);
-    const infosMerge = this.dbORM.merge(ad, data);
+    const infosMerge = this.db.merge(ad, data);
     let listTags: TagEntity[] = [];
 
     if (tags?.length) {
@@ -102,14 +105,14 @@ class AdsService {
     }, [] as TagEntity[]);
 
     infosMerge.tags = result;
-    return await this.dbORM.save(infosMerge);
+    return await this.db.save(infosMerge);
   }
 
   // ---
 
   async delete(id: number) {
     const ad = await this.find(id);
-    await this.dbORM.remove(ad);
+    await this.db.remove(ad);
     return await this.list();
   }
 }

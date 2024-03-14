@@ -16,3 +16,7 @@ enlever dossier types (typegraphql)
 
 disparition de axios (graphql)
 enlever dossier types (typegraphql)
+
+<!-- ALL -->
+
+les .env et .env.exemple
