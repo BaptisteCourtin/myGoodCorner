@@ -98,7 +98,7 @@ const createAds = ({ ad }: any) => {
           createAd({
             variables: { infos: { ...data, picture: result.data.filename } },
             onCompleted() {
-              // router.push(`/ads`);
+              router.push(`/ads`);
             },
           });
         })

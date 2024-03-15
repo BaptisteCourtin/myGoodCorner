@@ -19,7 +19,10 @@ export const PATCH_CATEGORY = gql`
 `;
 
 export const DELETE_CATEGORY = gql`
-  mutation DeleteCategory($id: String!) {
-    deleteCategory(id: $id)
+  mutation deleteCategory($deleteCategoryId: String!) {
+    deleteCategory(id: $deleteCategoryId) {
+      id
+      name
+    }
   }
 `;

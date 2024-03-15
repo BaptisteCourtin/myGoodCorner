@@ -69,13 +69,20 @@ export type CategoryUpdateEntity = {
   name: Scalars['String']['input'];
 };
 
+export type CategoryWithAdsCounted = {
+  __typename?: 'CategoryWithAdsCounted';
+  ads: Array<AdEntity>;
+  category: CategoryEntity;
+  count: Scalars['Float']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createAd: AdEntity;
   createCategory: CategoryEntity;
   createTag: TagEntity;
   deleteAd: Array<AdEntity>;
-  deleteCategory: Scalars['String']['output'];
+  deleteCategory: Array<CategoryEntity>;
   deleteTag: Array<TagEntity>;
   patchAd: AdEntity;
   patchCategory: CategoryEntity;
@@ -138,7 +145,7 @@ export type Query = {
   __typename?: 'Query';
   getAdById: AdEntity;
   getAdBySlug: AdEntity;
-  getCategoryById: CategoryEntity;
+  getCategoryById: CategoryWithAdsCounted;
   getListAd: Array<AdEntity>;
   getListCategories: Array<CategoryEntity>;
   getListTags: Array<TagEntity>;
@@ -158,6 +165,8 @@ export type QueryGetAdBySlugArgs = {
 
 export type QueryGetCategoryByIdArgs = {
   id: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  skip?: InputMaybe<Scalars['Float']['input']>;
 };
 
 
@@ -219,11 +228,11 @@ export type PatchCategoryMutationVariables = Exact<{
 export type PatchCategoryMutation = { __typename?: 'Mutation', patchCategory: { __typename?: 'CategoryEntity', id: string, name: string } };
 
 export type DeleteCategoryMutationVariables = Exact<{
-  id: Scalars['String']['input'];
+  deleteCategoryId: Scalars['String']['input'];
 }>;
 
 
-export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: string };
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory: Array<{ __typename?: 'CategoryEntity', id: string, name: string }> };
 
 export type CreateTagMutationVariables = Exact<{
   infos: TagCreateEntity;
@@ -274,11 +283,13 @@ export type GetListCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 export type GetListCategoriesQuery = { __typename?: 'Query', getListCategories: Array<{ __typename?: 'CategoryEntity', id: string, name: string }> };
 
 export type GetCategoryByIdQueryVariables = Exact<{
-  id: Scalars['String']['input'];
+  getCategoryByIdId: Scalars['String']['input'];
+  limit?: InputMaybe<Scalars['Float']['input']>;
+  skip?: InputMaybe<Scalars['Float']['input']>;
 }>;
 
 
-export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryEntity', id: string, name: string, ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, location: string, owner: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', id: string, name: string }> | null }> } };
+export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById: { __typename?: 'CategoryWithAdsCounted', ads: Array<{ __typename?: 'AdEntity', createdAt: string, description: string, id: string, owner: string, location: string, picture: string, price: number, slug: string, title: string, tags?: Array<{ __typename?: 'TagEntity', name: string, id: string }> | null }>, category: { __typename?: 'CategoryEntity', name: string, id: string } } };
 
 export type GetListTagsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -484,8 +495,11 @@ export type PatchCategoryMutationHookResult = ReturnType<typeof usePatchCategory
 export type PatchCategoryMutationResult = Apollo.MutationResult<PatchCategoryMutation>;
 export type PatchCategoryMutationOptions = Apollo.BaseMutationOptions<PatchCategoryMutation, PatchCategoryMutationVariables>;
 export const DeleteCategoryDocument = gql`
-    mutation DeleteCategory($id: String!) {
-  deleteCategory(id: $id)
+    mutation deleteCategory($deleteCategoryId: String!) {
+  deleteCategory(id: $deleteCategoryId) {
+    id
+    name
+  }
 }
     `;
 export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
@@ -503,7 +517,7 @@ export type DeleteCategoryMutationFn = Apollo.MutationFunction<DeleteCategoryMut
  * @example
  * const [deleteCategoryMutation, { data, loading, error }] = useDeleteCategoryMutation({
  *   variables: {
- *      id: // value for 'id'
+ *      deleteCategoryId: // value for 'deleteCategoryId'
  *   },
  * });
  */
@@ -711,7 +725,7 @@ export const GetAdByIdDocument = gql`
  *   },
  * });
  */
-export function useGetAdByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAdByIdQuery, GetAdByIdQueryVariables> & ({ variables: GetAdByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetAdByIdQuery(baseOptions: Apollo.QueryHookOptions<GetAdByIdQuery, GetAdByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAdByIdQuery, GetAdByIdQueryVariables>(GetAdByIdDocument, options);
       }
@@ -767,7 +781,7 @@ export const GetAdBySlugDocument = gql`
  *   },
  * });
  */
-export function useGetAdBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetAdBySlugQuery, GetAdBySlugQueryVariables> & ({ variables: GetAdBySlugQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetAdBySlugQuery(baseOptions: Apollo.QueryHookOptions<GetAdBySlugQuery, GetAdBySlugQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAdBySlugQuery, GetAdBySlugQueryVariables>(GetAdBySlugDocument, options);
       }
@@ -824,24 +838,26 @@ export type GetListCategoriesLazyQueryHookResult = ReturnType<typeof useGetListC
 export type GetListCategoriesSuspenseQueryHookResult = ReturnType<typeof useGetListCategoriesSuspenseQuery>;
 export type GetListCategoriesQueryResult = Apollo.QueryResult<GetListCategoriesQuery, GetListCategoriesQueryVariables>;
 export const GetCategoryByIdDocument = gql`
-    query GetCategoryById($id: String!) {
-  getCategoryById(id: $id) {
-    id
-    name
+    query GetCategoryById($getCategoryByIdId: String!, $limit: Float, $skip: Float) {
+  getCategoryById(id: $getCategoryByIdId, limit: $limit, skip: $skip) {
     ads {
       createdAt
       description
       id
-      location
       owner
+      location
       picture
       price
       slug
       tags {
-        id
         name
+        id
       }
       title
+    }
+    category {
+      name
+      id
     }
   }
 }
@@ -859,11 +875,13 @@ export const GetCategoryByIdDocument = gql`
  * @example
  * const { data, loading, error } = useGetCategoryByIdQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      getCategoryByIdId: // value for 'getCategoryByIdId'
+ *      limit: // value for 'limit'
+ *      skip: // value for 'skip'
  *   },
  * });
  */
-export function useGetCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables> & ({ variables: GetCategoryByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetCategoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>(GetCategoryByIdDocument, options);
       }
@@ -944,7 +962,7 @@ export const GetTagByIdDocument = gql`
  *   },
  * });
  */
-export function useGetTagByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTagByIdQuery, GetTagByIdQueryVariables> & ({ variables: GetTagByIdQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+export function useGetTagByIdQuery(baseOptions: Apollo.QueryHookOptions<GetTagByIdQuery, GetTagByIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetTagByIdQuery, GetTagByIdQueryVariables>(GetTagByIdDocument, options);
       }

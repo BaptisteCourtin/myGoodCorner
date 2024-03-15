@@ -10,29 +10,30 @@ export const GET_LIST_CATEGORIES = gql`
 `;
 
 export const GET_CATEGORY_BY_ID = gql`
-  query GetCategoryById($id: String!, $limit: Float, $skip: Float) {
-    getCategoryById(id: $id, limit: $limit, skip: $skip) {
-      id
-      name
-      count
-      category {
-        id
-        name
-      }
+  query GetCategoryById(
+    $getCategoryByIdId: String!
+    $limit: Float
+    $skip: Float
+  ) {
+    getCategoryById(id: $getCategoryByIdId, limit: $limit, skip: $skip) {
       ads {
         createdAt
         description
         id
-        location
         owner
+        location
         picture
         price
         slug
         tags {
-          id
           name
+          id
         }
         title
+      }
+      category {
+        name
+        id
       }
     }
   }

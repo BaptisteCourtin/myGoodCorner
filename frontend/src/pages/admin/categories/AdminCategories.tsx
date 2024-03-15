@@ -125,7 +125,7 @@ const AdminCategories = () => {
     const id = e.currentTarget.dataset.id;
     if (id) {
       deleteCategory({
-        variables: { id: id },
+        variables: { deleteCategoryId: id },
         onCompleted() {
           setReload(!reload);
         },
