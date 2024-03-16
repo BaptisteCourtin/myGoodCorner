@@ -15,7 +15,7 @@ export default class CategoryResolver {
   }
 
   @Query(() => CategoryWithAdsCounted)
-  async findCategory(
+  async getCategoryById(
     @Arg("id") id: string,
     @Arg("limit", { nullable: true }) limit?: number,
     @Arg("skip", { nullable: true }) skip?: number

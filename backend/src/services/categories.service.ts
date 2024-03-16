@@ -29,9 +29,6 @@ class CategoriesService {
     if (!category) {
       throw new Error("La catégorie n'existe pas");
     }
-    // const ads = await this.dbAds.findAndCountBy({
-    //   category: { id: category.id },
-    // });
     const ads = await this.dbAds.findAndCount({
       where: { category: { id: category.id } },
       skip: skip,

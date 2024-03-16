@@ -3,6 +3,7 @@ import Ad from "../entities/Ad.entity";
 import Category from "../entities/Category.entity";
 import Tag from "../entities/Tag.entity";
 
+// SANS DOCKER
 // export default new DataSource({
 //   type: "sqlite",
 //   database: "theGoodCornerORM.sqlite",
@@ -11,6 +12,7 @@ import Tag from "../entities/Tag.entity";
 //   logging: ["error", "query"], //à ne pas utiliser en production
 // });
 
+// AVEC DOCKER
 export default new DataSource({
   type: "postgres",
   host: "db",

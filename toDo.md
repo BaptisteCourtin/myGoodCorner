@@ -17,6 +17,7 @@ enlever dossier types (typegraphql)
 disparition de axios (graphql)
 enlever dossier types (typegraphql)
 
-<!-- ALL -->
+pagination
+le manque de la ctaegory dans id category
 
-les .env et .env.exemple
+<!-- ALL -->
