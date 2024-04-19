@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 
 import Image from "next/image";
-import axios from "axios";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -91,7 +90,7 @@ const createAds = ({ ad }: any) => {
     if (picture.length) {
       const formData = new FormData();
       formData.append("file", picture[0], picture[0].name);
-      axios
+      axiosInstance
         .post("http://localhost:3002/upload", formData)
         .then((result) => {
           console.log(result);

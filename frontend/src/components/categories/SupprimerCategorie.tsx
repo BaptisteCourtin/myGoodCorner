@@ -1,4 +1,3 @@
-import axiosInstance from "@/lib/axiosInstance";
 import { useDeleteCategoryMutation } from "@/types/graphql";
 import router from "next/router";
 import React from "react";

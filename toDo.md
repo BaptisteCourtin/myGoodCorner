@@ -8,16 +8,17 @@
 
 <!-- BACK -->
 
-enlever dossier routes (graphql)
-enlever dossier typedefs (typegraphql)
-enlever dossier types (typegraphql)
+✔️ enlever dossier routes (graphql)
+✔️ enlever dossier typedefs (typegraphql)
+✔️ enlever dossier types (typegraphql)
 
 <!-- FRONT -->
 
-disparition de axios (graphql)
-enlever dossier types (typegraphql)
+✔️ disparition de axios (graphql)
+✔️ enlever dossier types (typegraphql)
 
 pagination
 le manque de la ctaegory dans id category
+create ads est encore avec axios
 
 <!-- ALL -->
